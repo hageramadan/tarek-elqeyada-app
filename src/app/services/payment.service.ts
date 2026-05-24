@@ -117,8 +117,8 @@ export class PaymentService {
   private tabbyMerchantCode = 'masheeha';
   
   // PayMob Configuration
-  PAYMOB_SECRET_KEY = 'sau_sk_live_1de9051cb4f386de2fc87261c2552212a6cb2252a975138b9a0a6a944133a774';
-  PAYMOB_PUBLIC_KEY = 'sau_pk_live_8Dza5gChMSVJbnsKtWKJOTs8jlQz6ZEW';
+  // PAYMOB_SECRET_KEY = 'sau_sk_live_1de9051cb4f386de2fc87261c2552212a6cb2252a975138b9a0a6a944133a774';
+  // PAYMOB_PUBLIC_KEY = 'sau_pk_live_8Dza5gChMSVJbnsKtWKJOTs8jlQz6ZEW';
   PAYMOB_INTEGRATION_IDS = [14606, 14607];
 
   // Payment method mapping
