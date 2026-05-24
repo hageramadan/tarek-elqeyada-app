@@ -1,0 +1,11 @@
+<div class="confirmation-modal-overlay" *ngIf="show" (click)="onClose()">
+  <div class="confirmation-modal" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <p class="modal-message">{{ message }}</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="onCancel()">الغاء</button>
+        <button class="btn-confirm" (click)="onConfirm()">موافقة</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,190 @@
+<div class="review-container">
+  <div class="review-header">
+    <h2>المراجعة و الدفع</h2>
+  </div>
+
+  <div class="review-content" *ngIf="reviewData; else loadingTemplate">
+    <div class="two-columns">
+      <!-- العمود الأيمن: معلومات السيارة والحجز والعميل -->
+      <div class="right-column">
+        <!-- Car Info -->
+        <div class="car-info-card">
+  <div class="car-header">
+    <div class="car-image">
+      <img [src]="reviewData.selectedCar?.image_url" [alt]="reviewData.selectedCar?.name">
+    </div>
+    <div class="car-price-box">
+      <div class="car-price">
+        <span class="price">{{ getCarPrice() }} ريال</span>
+        <span class="period">/ {{ getPeriodLabel() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="car-info">
+    <div class="car-name">
+      <h3>{{ reviewData.selectedCar?.name }}</h3>
+    </div>
+    <div class="car-features">
+      <span> {{ getCarPickupTime() }}</span>
+      <span> {{ getCarKilometers() }}</span>
+    </div>
+  </div>
+</div>
+
+        <!-- Booking Details -->
+        <div class="booking-details">
+          <h4>تفاصيل الحجز</h4>
+          <div class="details-grid">
+            <div class="detail-item">
+              <span class="label"> تاريخ الاستلام:</span>
+              <span class="value">{{ formatDate(reviewData.selectedDate) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label"> وقت الاستلام:</span>
+              <span class="value">{{ reviewData.selectedTime }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label"> المدة:</span>
+              <span class="value">{{ reviewData.totalDays }} {{ getPeriodDaysLabel() }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label"> موقع التوصيل:</span>
+              <span class="value">{{ reviewData.selectedLocation?.address || 'لم يتم التحديد' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Info -->
+        <!-- <div class="customer-info">
+          <h4>معلومات العميل</h4>
+          <div class="details-grid">
+            <div class="detail-item">
+              <span class="label"> الاسم:</span>
+              <span class="value">{{ reviewData.formValue?.name }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label"> رقم الجوال:</span>
+              <span class="value">{{ reviewData.formValue?.countryCode }} {{ reviewData.formValue?.phone }}</span>
+            </div>
+            <div class="detail-item" *ngIf="reviewData.formValue?.email">
+              <span class="label"> البريد الإلكتروني:</span>
+              <span class="value">{{ reviewData.formValue?.email }}</span>
+            </div>
+          </div>
+        </div> -->
+      </div>
+
+      <!-- العمود الأيسر: ملخص الطلب وطرق الدفع -->
+      <div class="left-column">
+        <!-- Order Summary -->
+        <div class="order-summary">
+          <h4>ملخص الطلب</h4>
+          <div class="summary-item">
+            <span>{{ reviewData.selectedCar?.name }} {{ getCarPrice() }} ريال / {{ getPeriodLabel() }}</span>
+            <span class="summary-price">{{ formatNumber(getSubtotal()) }} ريال</span>
+          </div>
+          <div class="summary-item" *ngIf="getSelectedServicesTotal() > 0">
+            <span>خدمات اضافية</span>
+            <span class="summary-price">{{ formatNumber(getSelectedServicesTotal()) }} ريال</span>
+          </div>
+          <div class="summary-item" *ngIf="getDeliveryFees() > 0">
+            <span>رسوم التوصيل</span>
+            <span class="summary-price">{{ formatNumber(getDeliveryFees()) }} ريال</span>
+          </div>
+          <div class="summary-item">
+            <span>الضريبة</span>
+            <span class="summary-price">{{ formatNumber(getTotalTax()) }} ريال</span>
+          </div>
+          <div class="summary-item total">
+            <span>الاجمالي</span>
+            <span class="summary-price">{{ formatNumber(calculateTotal()) }} ريال</span>
+          </div>
+        </div>
+
+       <!-- Payment Methods -->
+<div class="payment-methods">
+  <h4>طريقة الدفع</h4>
+  <div class="payment-options">
+    <!-- عرض جميع طرق الدفع عندما يكون الإيجار شهري -->
+    <ng-container *ngIf="reviewData.bookingType === 'monthly'; else otherPaymentMethods">
+      <label *ngFor="let method of paymentMethods" class="payment-option" (click)="selectPaymentMethod(method)">
+        <input 
+          type="radio" 
+          name="payment" 
+          [value]="method.id" 
+          [checked]="selectedPaymentMethod?.id === method.id"
+          (change)="selectPaymentMethod(method)"
+        >
+        <div class="payment-content">
+          <div class="payment-icon">
+            <img [src]="method.image" [alt]="method.name" class="payment-image" (error)="onImageError($event)">
+          </div>
+          <span class="payment-label">{{ method.name }}</span>
+        </div>
+      </label>
+    </ng-container>
+    
+    <!-- عندما لا يكون الإيجار شهري (يومي أو اسبوعي)، نعرض فقط طرق الدفع الإلكترونية -->
+    <ng-template #otherPaymentMethods>
+      <label *ngFor="let method of getNonCashPaymentMethods()" class="payment-option" (click)="selectPaymentMethod(method)">
+        <input 
+          type="radio" 
+          name="payment" 
+          [value]="method.id" 
+          [checked]="selectedPaymentMethod?.id === method.id"
+          (change)="selectPaymentMethod(method)"
+        >
+        <div class="payment-content">
+          <div class="payment-icon">
+            <img [src]="method.image" [alt]="method.name" class="payment-image" (error)="onImageError($event)">
+          </div>
+          <span class="payment-label">{{ method.name }}</span>
+        </div>
+      </label>
+    </ng-template>
+  </div>
+  <div *ngIf="paymentMethods.length === 0" class="no-payment-methods">
+    <p>جاري تحميل طرق الدفع...</p>
+  </div>
+</div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+       
+          <button class="confirm-btn" (click)="confirmBooking()" [disabled]="isLoading">
+            <span *ngIf="!isLoading"> حجز</span>
+            <span *ngIf="isLoading" class="loading-content">
+              <span class="spinner-small"></span>
+              جاري المعالجة...
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Paymob Iframe Modal -->
+<div class="paymob-iframe-overlay" *ngIf="showPaymobIframe">
+  <div class="paymob-iframe-container">
+    <div class="paymob-iframe-header">
+      <h3>بوابة الدفع الإلكتروني</h3>
+      <button class="close-iframe-btn" (click)="closePaymobIframe()">✕</button>
+    </div>
+    <iframe 
+      *ngIf="paymobIframeUrl" 
+      [src]="paymobIframeUrl" 
+      class="paymob-iframe"
+      frameborder="0"
+      allow="payment"
+    ></iframe>
+  </div>
+</div>
+
+</div>
+
+<ng-template #loadingTemplate>
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>جاري تحميل البيانات...</p>
+  </div>
+</ng-template>

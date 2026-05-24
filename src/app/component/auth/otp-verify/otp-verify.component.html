@@ -1,0 +1,92 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeModal()" aria-label="إغلاق">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <div class="modal-content">
+      <h2 class="modal-title">التحقق من الهاتف</h2>
+      <p class="modal-description">
+        أدخل الرقم المكون من 4 أرقام الذي أرسلناه عبر رقم الهاتف: {{ phoneNumber }}
+      </p>
+
+      <form [formGroup]="otpForm" (ngSubmit)="onSubmit()">
+        <div class="otp-inputs">
+          <input
+            type="text"
+            id="otp1"
+            formControlName="otp1"
+            class="otp-input"
+            maxlength="1"
+            dir="ltr"
+            (input)="onInput($event, 0)"
+            (keydown)="onKeyDown($event, 0)"
+            (paste)="onPaste($event)"
+            autocomplete="off"
+          />
+          <input
+            type="text"
+            id="otp2"
+            formControlName="otp2"
+            class="otp-input"
+            maxlength="1"
+            dir="ltr"
+            (input)="onInput($event, 1)"
+            (keydown)="onKeyDown($event, 1)"
+            (paste)="onPaste($event)"
+            autocomplete="off"
+          />
+          <input
+            type="text"
+            id="otp3"
+            formControlName="otp3"
+            class="otp-input"
+            maxlength="1"
+            dir="ltr"
+            (input)="onInput($event, 2)"
+            (keydown)="onKeyDown($event, 2)"
+            (paste)="onPaste($event)"
+            autocomplete="off"
+          />
+          <input
+            type="text"
+            id="otp4"
+            formControlName="otp4"
+            class="otp-input"
+            maxlength="1"
+            dir="ltr"
+            (input)="onInput($event, 3)"
+            (keydown)="onKeyDown($event, 3)"
+            (paste)="onPaste($event)"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="timer-section">
+          <div class="timer">{{ formatTimer() }}</div>
+          <div class="resend-link">
+            <span *ngIf="!canResend">لم تستلم الرمز؟</span>
+            <a *ngIf="canResend" (click)="resendOTP()" class="resend-btn">إعادة ارسال</a>
+            <span *ngIf="!canResend" class="resend-disabled">إعادة ارسال</span>
+          </div>
+        </div>
+
+        <div class="error-message" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="otpForm.invalid || isLoading"
+        >
+          <span *ngIf="!isLoading">استمرار</span>
+          <span *ngIf="isLoading">جاري التحقق...</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

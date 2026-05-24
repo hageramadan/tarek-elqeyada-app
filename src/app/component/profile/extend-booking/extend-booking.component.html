@@ -1,0 +1,124 @@
+<div class="extend-booking-container">
+  <div class="extend-booking-card">
+    <!-- Card Header -->
+    <div class="card-header">
+      <h2 class="card-title">تمديد الحجز</h2>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="extendForm" (ngSubmit)="onSubmit()" class="extend-form">
+      <!-- Days Counter Section -->
+      <div class="days-section">
+        <div class="days-header">
+          <label class="days-label">عدد أيام الحجز</label>
+          <span class="days-count">{{ getExtensionDays() }} ايام</span>
+        </div>
+        <div class="days-counter">
+          <button type="button" class="counter-btn plus-btn" (click)="incrementDays()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          <input type="number" formControlName="extension_days" (change)="onDaysChange()" min="1" class="counter-input" readonly>
+          <button type="button" class="counter-btn minus-btn" (click)="decrementDays()" [disabled]="getExtensionDays() <= 1">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          
+        </div>
+      </div>
+
+      <!-- Previous Date -->
+      <div class="date-row">
+        <label class="date-label">تاريخ التسليم السابق</label>
+        <span class="date-value">{{ getPreviousEndDateFormatted() }}</span>
+      </div>
+
+      <!-- Divider -->
+      <div class="date-divider"></div>
+
+      <!-- New Date -->
+      <div class="date-row">
+        <label class="date-label">تاريخ التسليم بعد التمديد</label>
+        <span class="date-value">{{ getNewEndDateFormatted() }}</span>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <h4 class="section-title">ملخص الطلب</h4>
+        <div class="summary-item">
+          <span>السعر</span>
+          <span class="summary-price">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="price-icon">
+              <path d="M28 25.772C27.8414 27.2513 27.7721 27.8925 27.1797 29.3345L18.084 31.4995C18.2931 29.9413 18.5725 28.74 19.0254 28.019L28 25.772ZM15.3311 15.5718L18.0498 14.8911V4.98584C19.0623 3.67515 19.685 3.08633 20.9072 2.34229V14.1753L28 12.3999C27.8414 13.8788 27.7719 14.5198 27.1797 15.9614L20.9072 17.4907V20.8169L28 19.0864C27.8414 20.5656 27.7721 21.207 27.1797 22.6489L20.9072 24.1411V24.1733L18.0498 24.854V18.187L15.3311 18.8501V23.0522L15.2852 23.063C14.6601 24.327 13.7772 25.8449 12.9268 27.0571L4 29.0171C4.08005 27.6927 4.24729 26.9469 4.7666 25.6128L12.4736 23.686V19.5464L5.33008 21.2896C5.41012 19.9649 5.57728 19.2186 6.09668 17.8843L12.4736 16.2866V3.14404C13.4863 1.83306 14.1087 1.24363 15.3311 0.499512V15.5718Z" fill="#7B42FF"/>
+            </svg>
+            {{ calculateExtensionTotal(getExtensionDays()) }} 
+          </span>
+        </div>
+        <div class="summary-item">
+          <span>الضريبة</span>
+          <span class="summary-price">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="price-icon">
+              <path d="M28 25.772C27.8414 27.2513 27.7721 27.8925 27.1797 29.3345L18.084 31.4995C18.2931 29.9413 18.5725 28.74 19.0254 28.019L28 25.772ZM15.3311 15.5718L18.0498 14.8911V4.98584C19.0623 3.67515 19.685 3.08633 20.9072 2.34229V14.1753L28 12.3999C27.8414 13.8788 27.7719 14.5198 27.1797 15.9614L20.9072 17.4907V20.8169L28 19.0864C27.8414 20.5656 27.7721 21.207 27.1797 22.6489L20.9072 24.1411V24.1733L18.0498 24.854V18.187L15.3311 18.8501V23.0522L15.2852 23.063C14.6601 24.327 13.7772 25.8449 12.9268 27.0571L4 29.0171C4.08005 27.6927 4.24729 26.9469 4.7666 25.6128L12.4736 23.686V19.5464L5.33008 21.2896C5.41012 19.9649 5.57728 19.2186 6.09668 17.8843L12.4736 16.2866V3.14404C13.4863 1.83306 14.1087 1.24363 15.3311 0.499512V15.5718Z" fill="#7B42FF"/>
+            </svg>
+            {{ getTaxAmount() }} 
+          </span>
+        </div>
+        <div class="summary-item total">
+          <span>الإجمالي</span>
+          <span class="summary-price">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="price-icon">
+              <path d="M28 25.772C27.8414 27.2513 27.7721 27.8925 27.1797 29.3345L18.084 31.4995C18.2931 29.9413 18.5725 28.74 19.0254 28.019L28 25.772ZM15.3311 15.5718L18.0498 14.8911V4.98584C19.0623 3.67515 19.685 3.08633 20.9072 2.34229V14.1753L28 12.3999C27.8414 13.8788 27.7719 14.5198 27.1797 15.9614L20.9072 17.4907V20.8169L28 19.0864C27.8414 20.5656 27.7721 21.207 27.1797 22.6489L20.9072 24.1411V24.1733L18.0498 24.854V18.187L15.3311 18.8501V23.0522L15.2852 23.063C14.6601 24.327 13.7772 25.8449 12.9268 27.0571L4 29.0171C4.08005 27.6927 4.24729 26.9469 4.7666 25.6128L12.4736 23.686V19.5464L5.33008 21.2896C5.41012 19.9649 5.57728 19.2186 6.09668 17.8843L12.4736 16.2866V3.14404C13.4863 1.83306 14.1087 1.24363 15.3311 0.499512V15.5718Z" fill="#7B42FF"/>
+            </svg>
+            {{ getFinalTotal() }} 
+          </span>
+        </div>
+      </div>
+
+      <!-- Payment Methods -->
+      <div class="payment-methods">
+        <h4 class="section-title">طريقة الدفع</h4>
+        <div class="payment-options" *ngIf="paymentMethods.length > 0">
+          <label *ngFor="let method of paymentMethods" class="payment-option">
+            <input type="radio" name="payment" [value]="method.id" (change)="selectPaymentMethod(method.id)" [checked]="selectedPaymentMethod === method.id">
+            <div class="payment-content">
+              <!-- Cash payment: show image -->
+              <div class="payment-icon" *ngIf="(method.type === 'cash' || method.name?.includes('نقدي')) && (method.image || 'https://dev.tareqalqeyada.sa/images/payment_image.png')">
+                <img [src]="method.image || 'https://dev.tareqalqeyada.sa/images/payment_image.png'" [alt]="method.name" class="payment-image">
+              </div>
+              <!-- Other payment methods: show SVG -->
+              <div class="payment-icon" *ngIf="method.type !== 'cash' && !method.name?.includes('نقدي')" [innerHTML]="getPaymentIconSVG(method.icon || 'visa-mastercard')"></div>
+              <span class="payment-label">{{ method.name }}</span>
+            </div>
+          </label>
+        </div>
+        <div *ngIf="isLoadingPaymentMethods" class="payment-loading">
+          <span>جاري تحديث طرق الدفع...</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="submit-button" [disabled]="isLoading || !extendForm.valid || !selectedPaymentMethod">
+        {{ isLoading ? 'جاري التمديد...' : 'تمديد الحجز' }}
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div class="success-modal-overlay" *ngIf="showSuccessModal" (click)="onSuccessModalClose()">
+  <div class="success-modal" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="onSuccessModalClose()">✕</button>
+    <div class="success-icon">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    <h3>تم تمديد الحجز</h3>
+    <p>تم تمديد الحجز بنجاح</p>
+    <button class="btn-primary" (click)="goToHome()">العودة للرئيسية</button>
+  </div>
+</div>

@@ -1,0 +1,284 @@
+<!-- Loading State - يظهر حتى يتم تحميل البيانات -->
+<div *ngIf="isLoadingCar || !booking" class="loading-overlay-full">
+  <div class="loading-spinner-container">
+    <div class="spinner-large"></div>
+    <p class="loading-text">جاري تحميل بيانات الحجز...</p>
+  </div>
+</div>
+
+<!-- المحتوى الرئيسي - يظهر فقط بعد تحميل البيانات -->
+<div *ngIf="!isLoadingCar && booking" class="booking-details-card">
+  <!-- Car Information Section -->
+  <div class="car-section">
+    <!-- Price on RIGHT (RTL) - Top -->
+    <div class="price-display">{{ getTotalWithDelivery() }} 
+      <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 17.9346C19.8678 18.9843 19.81 19.4396 19.3164 20.4629L11.7373 22C11.9115 20.8941 12.1431 20.041 12.5205 19.5293L20 17.9346ZM9.44238 10.6953L11.708 10.2129V3.18359C12.5518 2.25338 13.0704 1.83564 14.0889 1.30762V9.70508L20 8.44531C19.8679 9.49471 19.8099 9.94966 19.3164 10.9727L14.0889 12.0576V14.418L20 13.1904C19.8678 14.2401 19.81 14.6954 19.3164 15.7188L14.0889 16.7773V16.8008L11.708 17.2842V12.5518L9.44238 13.0215V16.0049L9.40332 16.0127C8.88244 16.9096 8.14799 17.9876 7.43945 18.8477L0 20.2383C0.0666928 19.2983 0.20598 18.7689 0.638672 17.8223L7.06152 16.4541V13.5166L1.1084 14.7539C1.1751 13.8138 1.31521 13.2838 1.74805 12.3369L7.06152 11.2031V1.87598C7.9053 0.945727 8.424 0.527994 9.44238 0V10.6953Z" fill="#7B42FF"/>
+      </svg>
+    </div>
+    
+    <!-- Car Image and Details on LEFT (RTL) -->
+    <div class="car-content-left">
+      <div class="car-image-wrapper">
+        <div class="car-image-container">
+          <img *ngIf="booking.car?.imageUrl" [src]="booking.car?.imageUrl" alt="Car" class="car-image">
+          <div *ngIf="!booking.car?.imageUrl" class="placeholder-image">🚗</div>
+        </div>
+        <div class="car-badges">
+          <span class="badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="badge-icon">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            {{ booking.quick_policy?.pickup_within_hour_text || 'استلام خلال ساعة' }}
+          </span>
+          <span class="badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="badge-icon">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+            {{ booking.quick_policy?.km_limit_text || 'الكيلومترات المتاحة 400' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Car Details Text -->
+      <div class="car-details-text">
+        <div class="car-type-title">{{ booking.car?.name || 'سيدان' }} </div>
+        <div class="location-info">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="location-icon">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span>{{ booking.delivery_type === 'delivery' ? '(يتم توصيل في الرياض فقط)' : 'استلام من الفرع' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Date Section -->
+  <div class="booking-date-section">
+    <div class="date-section-content">
+      <div class="date-row">
+        <span class="date-label">مدة الحجز:</span>
+        <span class="date-value">{{ booking.total_days }} يوم</span>
+      </div>
+      <div class="date-row">
+        <span class="date-label">يبدأ الحجز بتاريخ:</span>
+        <span class="date-value">{{ formatDate(booking.start_date) }}</span>
+      </div>
+      <div class="date-row">
+        <span class="date-label">ينتهي الحجز بتاريخ:</span>
+        <span class="date-value">{{ getEndDate() }}</span>
+      </div>
+      <div class="date-row" style="font-size: 0.85em; color: #666; margin-top: 8px;">
+        <span style="font-style: italic;">يتوجب على المستأجر إعادة السيارة أو طلب تمديد الحجز لتجنب فرض أي رسوم إضافية</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery Method Section -->
+  <div class="details-section delivery-section">
+    <h3 class="section-title">موقع توصيل السيارة</h3>
+    <div class="delivery-content">
+      <div class="delivery-info">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="location-icon-purple">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span>توصيل الي موقعك الحالي</span>
+      </div>
+      <p class="delivery-address">{{ booking.delivery_address || 'الرياض' }}</p>
+    </div>
+  </div>
+
+  <!-- Payment Details Section -->
+  <div class="details-section">
+    <h3 class="section-title">تفاصيل الدفع</h3>
+    <div class="info-row">
+      <span class="label">اجمالي سعر الايجار لمدة {{ booking.total_days }} ايام:</span>
+      <span class="value">{{ getFloatValue(booking.base_price) }} ر.س</span>
+    </div>
+    <div class="info-row" *ngIf="getDeliveryFee() > 0">
+      <span class="label">رسوم التوصيل:</span>
+      <span class="value">{{ getDeliveryFee() }} ر.س</span>
+    </div>
+    <div class="info-row">
+      <span class="label">الضريبة:</span>
+      <span class="value">{{ getFloatValue(booking.tax_amount) }} ر.س</span>
+    </div>
+    <div class="info-row total">
+      <span class="label">الاجمالي:</span>
+      <span class="value">{{ getTotalWithDelivery() }} ر.س</span>
+    </div>
+  </div>
+
+  <!-- Payment Status Section -->
+  <div class="details-section payment-status-section">
+    <h3 class="section-title">حالة الدفع</h3>
+    
+    <!-- حالة انتظار الدفع (pending من الـ URL) -->
+    <div *ngIf="isWaitingForPayment" class="payment-status waiting">
+      <div class="status-icon waiting-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="#F59E0B" stroke-width="2" fill="#FEF3C7"/>
+          <path d="M12 6V12L16 14" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="status-text">
+        <div class="status-title">في انتظار الدفع</div>
+        <div class="status-detail">يرجى إتمام عملية الدفع لتأكيد حجزك</div>
+      </div>
+      <button class="btn-retry-payment" (click)="openPaymentMethodsModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12C1 12 4 4 12 4C20 4 23 12 23 12" stroke="currentColor" fill="none"/>
+          <path d="M1 12C1 12 4 20 12 20C20 20 23 12 23 12" stroke="currentColor" fill="none"/>
+          <polyline points="9 9 12 12 9 15" stroke="currentColor" fill="none"/>
+        </svg>
+        <span>إتمام الدفع</span>
+      </button>
+    </div>
+
+    <!-- حالة الدفع المكتمل (تم الدفع بنجاح) -->
+    <div *ngIf="isPaymentCompleted() && !isWaitingForPayment" class="payment-status completed">
+      <div class="status-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="#10B981" stroke-width="2" fill="#D1FAE5"/>
+          <path d="M8 12L11 15L16 9" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="status-text">
+        <div class="status-title">{{ getPaymentStatusText() }}</div>
+        <div class="status-detail" *ngIf="isCashPayment()">سيتم الدفع نقداً عند استلام السيارة</div>
+        <div class="status-detail" *ngIf="!isCashPayment()">تمت عملية الدفع بنجاح</div>
+      </div>
+    </div>
+
+    <!-- حالة عدم اكتمال الدفع (لم يتم الدفع بعد) -->
+    <div *ngIf="!isPaymentCompleted() && !isCashPayment() && !isWaitingForPayment" class="payment-status not-completed">
+      <div class="status-icon pending">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="#EF4444" stroke-width="2" fill="#FEE2E2"/>
+          <path d="M12 8V12M12 16H12.01" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="status-text">
+        <div class="status-title">لم يتم الدفع بعد</div>
+        <div class="status-detail">يرجى إتمام عملية الدفع لتأكيد الحجز</div>
+      </div>
+      
+      <button class="btn-retry-payment" (click)="openPaymentMethodsModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12C1 12 4 4 12 4C20 4 23 12 23 12" stroke="currentColor" fill="none"/>
+          <path d="M1 12C1 12 4 20 12 20C20 20 23 12 23 12" stroke="currentColor" fill="none"/>
+          <polyline points="9 9 12 12 9 15" stroke="currentColor" fill="none"/>
+        </svg>
+        <span>إعادة الدفع</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Action Button -->
+  <div class="actions">
+    <button class="btn-extend" *ngIf="booking.status === 'completed'" (click)="onExtend()">تمديد الحجز</button>
+  </div>
+</div>
+
+<!-- Payment Methods Modal -->
+<div class="modal-overlay" *ngIf="showPaymentMethodsModal" (click)="closePaymentMethodsModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>اختر طريقة الدفع</h3>
+      <button class="close-btn" (click)="closePaymentMethodsModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <!-- رسالة توضيحية لـ Mispay -->
+      <div class="payment-info-message" *ngIf="getTotalWithDelivery() < 200">
+        <div class="info-message-warning">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 8V12M12 16H12.01" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="10" stroke="#F59E0B" stroke-width="2"/>
+          </svg>
+          <span>ملاحظة: طريقة الدفع Mispay غير متاحة للمبالغ أقل من 200 ريال</span>
+        </div>
+      </div>
+      
+      <!-- قائمة طرق الدفع -->
+      <div class="payment-methods-list">
+        <!-- عرض طرق الدفع المصافة -->
+        <div *ngIf="getNonCashPaymentMethods().length === 0 && !isLoadingMethods" class="no-payment-methods">
+          <p>لا توجد طرق دفع متاحة حالياً</p>
+        </div>
+        
+        <div *ngIf="isLoadingMethods" class="loading-methods">
+          <div class="spinner-small"></div>
+          <p>جاري تحميل طرق الدفع...</p>
+        </div>
+        
+        <div 
+          *ngFor="let method of getNonCashPaymentMethods()" 
+          class="payment-method-item"
+          [class.disabled]="method.name && (method.name.toLowerCase().includes('mispay') || method.name.toLowerCase().includes('مسباي')) && getTotalWithDelivery() < 200"
+          (click)="!isProcessingPayment && !(method.name && (method.name.toLowerCase().includes('mispay') || method.name.toLowerCase().includes('مسباي')) && getTotalWithDelivery() < 200) && selectPaymentMethod(method)"
+        >
+          <div class="method-info">
+            <img *ngIf="method.image" [src]="method.image" [alt]="method.name" class="method-image" (error)="onImageError($event)">
+            <div *ngIf="!method.image" class="method-placeholder">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <circle cx="8.5" cy="10.5" r="2.5"/>
+                <path d="M21 15L16 10L5 21"/>
+              </svg>
+            </div>
+            <div class="method-details">
+              <div class="method-name">{{ method.name }}</div>
+              <div *ngIf="method.name && (method.name.toLowerCase().includes('mispay') || method.name.toLowerCase().includes('مسباي')) && getTotalWithDelivery() < 200" 
+                   class="method-warning">
+                ⚠️ يتطلب مبلغ أكثر من 200 ريال
+              </div>
+              <div *ngIf="method.name && (method.name.toLowerCase().includes('نقدا') || method.name.toLowerCase().includes('كاش') || method.name.toLowerCase().includes('cash')) && !isMonthlyRental()" 
+                   class="method-warning">
+                ⚠️ متاحة فقط للإيجار الشهري
+              </div>
+            </div>
+          </div>
+          <div class="method-select">
+            <button 
+              class="select-btn" 
+              [disabled]="isProcessingPayment || (method.name && (method.name.toLowerCase().includes('mispay') || method.name.toLowerCase().includes('مسباي')) && getTotalWithDelivery() < 200)"
+            >
+              <span *ngIf="isProcessingPayment && selectedPaymentMethod?.id === method.id">جاري...</span>
+              <span *ngIf="!(isProcessingPayment && selectedPaymentMethod?.id === method.id)">
+                {{ (method.name && (method.name.toLowerCase().includes('mispay') || method.name.toLowerCase().includes('مسباي')) && getTotalWithDelivery() < 200) ? 'غير متاح' : 'اختر' }}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Paymob Iframe Modal -->
+<div class="paymob-iframe-overlay" *ngIf="showPaymobIframe">
+  <div class="paymob-iframe-container">
+    <div class="paymob-iframe-header">
+      <h3>بوابة الدفع الإلكتروني</h3>
+      <button class="close-iframe-btn" (click)="closePaymobIframe()">✕</button>
+    </div>
+    <iframe 
+      *ngIf="paymobIframeUrl" 
+      [src]="paymobIframeUrl" 
+      class="paymob-iframe"
+      frameborder="0"
+      allow="payment"
+    ></iframe>
+  </div>
+</div>
+
+<!-- Loading Overlay للمعالجة -->
+<div class="loading-overlay" *ngIf="isProcessingPayment && !showPaymobIframe">
+  <div class="loading-spinner">
+    <div class="spinner"></div>
+    <p>جاري معالجة الدفع...</p>
+  </div>
+</div>

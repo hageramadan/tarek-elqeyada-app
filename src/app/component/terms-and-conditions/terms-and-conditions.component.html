@@ -1,0 +1,17 @@
+<div class="terms-container">
+  <div class="container">
+    <div class="terms-header">
+      <h1 class="page-title">الشروط والأحكام</h1>
+      <p class="page-subtitle">يرجى قراءة الشروط والأحكام التالية بعناية قبل استخدام خدماتنا</p>
+    </div>
+
+    <div class="terms-content" *ngIf="!isLoading">
+      <div class="terms-text" [innerHTML]="formatText(termsAndConditions)"></div>
+    </div>
+
+    <div class="loading-container" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>جاري تحميل الشروط والأحكام...</p>
+    </div>
+  </div>
+</div>

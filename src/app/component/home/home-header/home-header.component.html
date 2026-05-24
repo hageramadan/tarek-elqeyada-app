@@ -1,0 +1,39 @@
+<div class="slider-container">
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner"></div>
+  </div>
+  
+  <div class="slider-wrapper" *ngIf="!isLoading && slides.length > 0">
+    <div 
+      class="slide" 
+      *ngFor="let slide of slides; let i = index"
+      [class.active]="i === currentSlide"
+      [class.prev]="i === currentSlide - 1 || (currentSlide === 0 && i === slides.length - 1)"
+      [class.next]="i === currentSlide + 1 || (currentSlide === slides.length - 1 && i === 0)"
+    >
+      <img
+        class="slide-bg"
+        [src]="slide.image"
+        alt=""
+        decoding="async"
+        fetchpriority="high"
+        (error)="onSlideImageError($event)"
+      />
+      <div class="slide-overlay"></div>
+      <div class="slide-content" [class.animate-in]="i === currentSlide">
+        <h1 class="slide-title" [innerHTML]="getFormattedTitle(slide.title)"></h1>
+        <p class="slide-description">{{ slide.description }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slider-indicators" *ngIf="!isLoading && slides.length > 1">
+    <span 
+      *ngFor="let slide of slides; let i = index"
+      class="indicator"
+      [class.active]="i === currentSlide"
+      (click)="goToSlide(i)"
+      [attr.aria-label]="'انتقل إلى الشريحة ' + (i + 1)"
+    ></span>
+  </div>
+</div>

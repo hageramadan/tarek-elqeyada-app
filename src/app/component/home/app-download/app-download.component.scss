@@ -1,0 +1,325 @@
+.app-download-container {
+  width: 100%;
+  max-width: 100vw;
+  padding: 4rem 0;
+  background: var(--white);
+  overflow: hidden;
+  box-sizing: border-box;
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    width: 100%;
+    max-width: min(1400px, 100%);
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .app-download-content {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    flex-direction: row;
+
+    .app-image-section {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      opacity: 0;
+      transform: translateX(100px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      will-change: opacity, transform;
+
+      .app-image {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: translateY(-10px) scale(1.02);
+        }
+      }
+    }
+
+    .app-text-section {
+      flex: 1;
+      opacity: 0;
+      transform: translateX(-100px);
+      transition: opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s;
+      will-change: opacity, transform;
+      text-align: right;
+
+      .app-title {
+        ::ng-deep .highlight-word {
+          color: var(--primary-purple);
+        }
+      }
+
+      .app-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--text-dark);
+        margin-bottom: 1.5rem;
+        line-height: 1.3;
+      }
+
+      .app-description {
+        font-size: 1.25rem;
+        color: var(--text-light);
+        line-height: 1.8;
+        margin-bottom: 2.5rem;
+      }
+
+      .download-buttons {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: start;
+
+        .download-btn {
+          display: inline-block;
+          transition: transform 0.3s ease;
+          text-decoration: none;
+
+          &:hover {
+            transform: scale(1.05);
+          }
+
+          &:active {
+            transform: scale(0.98);
+          }
+
+          svg {
+            height: 56px;
+            width: auto;
+            transition: filter 0.3s ease;
+
+            &:hover {
+              filter: brightness(1.1);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Scroll reveal animation
+.app-download-container.visible {
+  .app-image-section {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
+    border-radius: 30px !important;
+    overflow: hidden !important;
+    img{
+      border-radius: 30px !important;
+    overflow: hidden !important;
+    height: 500px !important;
+
+    }
+  }
+
+  .app-text-section {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
+  }
+}
+
+// Tablet styles
+@media (max-width: 1024px) {
+  .app-download-container {
+    padding: 3rem 0;
+
+    .app-download-content {
+      gap: 3rem;
+
+      .app-text-section {
+        .app-title {
+          font-size: 2rem;
+        }
+
+        .app-description {
+          font-size: 1.1rem;
+        }
+
+        .download-buttons {
+          .download-btn {
+            svg {
+              height: 50px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Mobile styles
+@media (max-width: 768px) {
+  .app-download-container {
+    padding: 2rem 0;
+
+    .container {
+      padding: 0 1rem;
+    }
+
+    .app-download-content {
+      flex-direction: column;
+      gap: 2rem;
+
+      .app-image-section {
+        order: 1;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        .app-image {
+          max-width: 300px;
+          margin: 0 auto;
+        }
+      }
+
+      .app-text-section {
+        order: 2;
+        text-align: center;
+
+        .app-title {
+          font-size: 1.75rem;
+          margin-bottom: 1rem;
+        }
+
+        .app-description {
+          font-size: 1rem;
+          margin-bottom: 2rem;
+        }
+
+        .download-buttons {
+          justify-content: center;
+          gap: 1rem;
+
+          .download-btn {
+            svg {
+              height: 45px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Small mobile styles
+@media (max-width: 480px) {
+  .app-download-container {
+    padding: 1.5rem 0;
+    max-width: 100vw;
+    overflow-x: hidden;
+
+    .container {
+      padding: 0 1rem;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    .app-download-content {
+      .app-image-section {
+        display: flex;
+        justify-content: center;
+
+        .app-image {
+          max-width: 250px;
+          margin: 0 auto;
+        }
+      }
+
+      .app-text-section {
+        .app-title {
+          font-size: 1.5rem;
+        }
+
+        .app-description {
+          font-size: 0.95rem;
+        }
+
+        .download-buttons {
+          flex-direction: column;
+          align-items: center;
+          width: 100%;
+
+          .download-btn {
+            width: 100%;
+            max-width: 200px;
+
+            svg {
+              width: 100%;
+              height: auto;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 375px) {
+  .app-download-container {
+    padding: 1.25rem 0;
+
+    .container {
+      padding: 0 0.875rem;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    .app-download-content {
+      gap: 1.5rem;
+
+      .app-image-section {
+        display: flex;
+        justify-content: center;
+
+        .app-image {
+          max-width: 220px;
+          margin: 0 auto;
+        }
+      }
+
+      .app-text-section {
+        .app-title {
+          font-size: 1.35rem;
+        }
+
+        .app-description {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 360px) {
+  .app-download-container {
+    padding: 1rem 0;
+
+    .container {
+      padding: 0 0.75rem;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    .app-text-section {
+      .app-title {
+        font-size: 1.25rem;
+      }
+
+      .app-description {
+        font-size: 0.85rem;
+      }
+    }
+  }
+}

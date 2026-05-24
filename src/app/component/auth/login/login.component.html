@@ -1,0 +1,77 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="$event.stopPropagation(); closeModal()" aria-label="إغلاق">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <div class="modal-content">
+      <h2 class="modal-title">تسجيل دخول</h2>
+      <p class="modal-description">الرجاء إدخال رقم الهاتف للمتابعة عملية التسجيل</p>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="phone">رقم الهاتف</label>
+          <div class="phone-input-group">
+            <div class="country-code-wrapper" (click)="$event.stopPropagation()">
+              <div class="country-select" (click)="toggleCountryDropdown()" [class.open]="isCountryDropdownOpen">
+                <img 
+                  *ngIf="selectedCountry" 
+                  [src]="selectedCountry.flagUrl" 
+                  [alt]="selectedCountry.name"
+                  class="country-flag"
+                />
+                <span class="country-dial-code">{{ selectedCountry?.dialCode || '+966' }}</span>
+                <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M6 9L1 4h10z" fill="#6b46c1"/>
+                </svg>
+              </div>
+              <div class="country-dropdown" *ngIf="isCountryDropdownOpen">
+                <div 
+                  *ngFor="let country of countries" 
+                  class="country-option"
+                  (click)="selectCountry(country)"
+                  [class.selected]="selectedCountry?.dialCode === country.dialCode"
+                >
+                  <img [src]="country.flagUrl" [alt]="country.name" class="country-flag-option"/>
+                  <span class="country-dial-code-option">{{ country.dialCode }}</span>
+                </div>
+              </div>
+            </div>
+            <input
+              type="tel"
+              id="phone"
+              formControlName="phone"
+              class="phone-input"
+              placeholder="5xxxxxxxx"
+              [class.error]="loginForm.get('phone')?.invalid && loginForm.get('phone')?.touched"
+            />
+          </div>
+          <div class="error-message" *ngIf="loginForm.get('phone')?.invalid && loginForm.get('phone')?.touched">
+            يرجى إدخال رقم هاتف صحيح
+          </div>
+        </div>
+
+        <div class="error-message" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="loginForm.invalid || isLoading"
+        >
+          <span *ngIf="!isLoading">تسجيل الدخول</span>
+          <span *ngIf="isLoading">جاري المعالجة...</span>
+        </button>
+      </form>
+
+      <div class="switch-link">
+        <span>ليس لديك حساب؟</span>
+        <a (click)="switchToRegister()">انشاء حساب</a>
+      </div>
+    </div>
+  </div>
+</div>

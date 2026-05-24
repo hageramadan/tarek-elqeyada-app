@@ -1,0 +1,403 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeModal()" aria-label="إغلاق">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <div class="booking-content" *ngIf="selectedCar; else loadingTemplate">
+      <!-- Title -->
+      <!-- Car Details Card (Top Section) -->
+      <div class="car-details-card">
+        <!-- Header Section with Title and Price -->
+          <div class="car-header-section">
+          <div class="car-title-wrapper">
+            <h3 class="car-title">{{ selectedCar.name }}</h3>
+          </div>
+          <div class="car-price-tag">
+            <span class="price-number">{{ getCarPrice() }}</span>
+            <span class="price-currency">ريال</span>
+            <span class="price-period">/ {{ getPeriodLabel() }}</span>
+          </div>
+        </div>
+
+        <!-- First Row: Car Image, Advantages and Conditions in one row -->
+        <div class="car-first-row">
+          <!-- Car Image Column -->
+          <div class="car-image-column">
+            <div class="car-image-wrapper">
+              <img [src]="selectedCar.image_url" [alt]="selectedCar.name" class="car-image" (error)="onImageError($event)">
+            </div>
+          </div>
+
+          <!-- Content Columns: Conditions -->
+          <div class="car-content-columns">
+            <!-- Rental Conditions -->
+            <div class="rental-conditions">
+              <h4 class="section-title" (click)="toggleConditions()">
+                <span>شروط التأجير :</span>
+                <svg class="accordion-icon" [class.collapsed]="!showConditions" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </h4>
+              <ul class="conditions-list" [class.collapsed]="!showConditions">
+                <li *ngFor="let term of bookingTerms">{{ term.title }}: {{ term.description }}</li>
+                <li *ngIf="bookingTerms.length === 0">جاري تحميل الشروط...</li>
+              </ul>
+
+              <!-- Features (Below Conditions) -->
+              <div class="car-features">
+                <div class="feature-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  <span>{{ getCarPickupTime() }}</span>
+                </div>
+                <div class="feature-divider"></div>
+                <div class="feature-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <circle cx="12" cy="12" r="6"/>
+                    <line x1="12" y1="6" x2="12" y2="2"/>
+                    <line x1="12" y1="18" x2="12" y2="22"/>
+                    <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/>
+                    <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+                    <line x1="2" y1="12" x2="6" y2="12"/>
+                    <line x1="18" y1="12" x2="22" y2="12"/>
+                    <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/>
+                    <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+                  </svg>
+                  <span>{{ getCarKilometers() }}</span>
+                </div>
+                <div class="feature-divider" *ngIf="getCarDeductibleText()"></div>
+                <div class="feature-item" *ngIf="getCarDeductibleText()">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                  </svg>
+                  <span>{{ getCarDeductibleText() }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Booking Layout -->
+      <div class="booking-layout">
+        <!-- Right Column - Form -->
+        <div class="right-column">
+          <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+            <!-- Name -->
+            <div class="form-group">
+              <label for="name">الاسم *</label>
+              <input type="text" id="name" formControlName="name" class="form-input" placeholder="الاسم">
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+              <label for="phone">رقم الجوال *</label>
+              <div class="phone-input-group">
+                <div class="country-code-wrapper" (click)="$event.stopPropagation()">
+                  <div class="country-select" (click)="toggleCountryDropdown($event)" [class.open]="isCountryDropdownOpen">
+                    <img *ngIf="selectedCountry" [src]="selectedCountry.flagUrl" [alt]="selectedCountry.name" class="country-flag">
+                    <span class="country-dial-code">{{ selectedCountry?.dialCode || '+966' }}</span>
+                    <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M6 9L1 4h10z" fill="#6b46c1"/>
+                    </svg>
+                  </div>
+                  <div class="country-dropdown" *ngIf="isCountryDropdownOpen">
+                    <div *ngFor="let country of countries" class="country-option" (click)="selectCountry(country)" [class.selected]="selectedCountry?.dialCode === country.dialCode">
+                      <img [src]="country.flagUrl" [alt]="country.name" class="country-flag-option"/>
+                      <span class="country-dial-code-option">{{ country.dialCode }}</span>
+                    </div>
+                  </div>
+                </div>
+                <input type="tel" id="phone" formControlName="phone" class="phone-input" placeholder="5xxxxxxxx">
+              </div>
+            </div>
+
+            <!-- Date and Time in one row -->
+            <div class="form-group date-time-group ">
+              <label>تاريخ ووقت الاستلام</label>
+              <div class="date-time-row">
+                <div class="date-time-input-wrapper">
+                  <input 
+                    type="date" 
+                    class="date-time-input"
+                    [value]="selectedDate"
+                    [min]="getMinDate()"
+                    [max]="getMaxDate()"
+                    (change)="onDateChange($event)"
+                    (click)="$event.stopPropagation()"
+                  />
+                  <svg class="date-time-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                </div>
+                <div class="date-time-input-wrapper">
+                  <select 
+                    class="date-time-input"
+                    [(ngModel)]="selectedTime"
+                    [ngModelOptions]="{standalone: true}"
+                    (click)="$event.stopPropagation()"
+                  >
+                    <option value="">اختر الوقت</option>
+                    <option *ngFor="let time of availableTimes" [value]="time">{{ time }}</option>
+                  </select>
+                  <svg class="date-time-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Number of Days / Months -->
+            <div class="form-group">
+              <label>{{ getPeriodInputLabel() }}</label>
+              <div class="days-selector-wrapper">
+                <span class="days-label-text">
+                  {{ totalDays }} {{ getPeriodDaysLabel() }}
+                </span>
+                <div class="days-selector">
+                  <button type="button" class="days-btn minus" (click)="decreaseDays()" [disabled]="totalDays <= 1">-</button>
+                  <div class="days-display">
+                    <span class="days-input">{{ totalDays }}</span>
+                  </div>
+                  <button type="button" class="days-btn plus" (click)="increaseDays()">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pickup Location -->
+            <div class="form-group">
+              <label>موقع توصيل السيارة</label>
+              <button type="button" class="select-location-btn" *ngIf="!selectedLocation" (click)="openMapModal()">
+                اختر من الخريطة
+              </button>
+              <div class="location-container" *ngIf="selectedLocation">
+                <div class="map-preview" (click)="openMapModal()">
+                  <img 
+                    [src]="getMapImageUrl()" 
+                    class="map-image"
+                    (error)="onMapImageError($event)"
+                    alt="موقع الاستلام">
+                </div>
+                <div class="map-location-info" (click)="openMapModal()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  <span class="location-text">الموقع</span>
+                </div>
+                <div class="location-address-display">
+                  {{ selectedLocation.address }}
+                </div>
+              </div>
+            </div>
+
+            <!-- License Upload -->
+            <div class="form-group">
+              <label>أرفق صورة الرخصة - سارية المفعول <span *ngIf="!licenseImageUrl">*</span></label>
+              <div class="file-upload">
+                <input type="file" id="license" accept=".pdf,.png,.jpg,.jpeg" (change)="onLicenseFileChange($event)" style="display: none;">
+                
+                <!-- Show existing license image if available -->
+                <div class="license-image-preview" *ngIf="licenseImageUrl && !licenseFile">
+                  <img [src]="licenseImageUrl" alt="صورة الرخصة" class="license-preview-img">
+                  <button type="button" class="license-edit-btn" (click)="onEditLicenseImage()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                  </button>
+                </div>
+                
+                <!-- Show file upload area if no existing image -->
+                <div class="file-upload-area" *ngIf="!licenseImageUrl && !licenseFile">
+                  <label for="license" class="file-upload-label">
+                    <div class="upload-icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                      </svg>
+                    </div>
+                    <span class="upload-text">ارفق الملف</span>
+                  </label>
+                  <span class="file-info">PDF, PNG Or JPG (MAX 5 MB)</span>
+                </div>
+                
+                <!-- Show selected file info -->
+                <div class="file-selected" *ngIf="licenseFile">
+                  <div class="file-selected-info">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="file-icon">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                      <line x1="16" y1="13" x2="8" y2="13"/>
+                      <line x1="16" y1="17" x2="8" y2="17"/>
+                      <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    <span class="file-name">{{ licenseFile.name }}</span>
+                  </div>
+                  <button type="button" class="file-remove-btn" (click)="removeLicenseFile()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="18" y1="6" x2="6" y2="18"/>
+                      <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Left Column - Summary & Payment -->
+        <div class="left-column">
+          <!-- Additional Services Section -->
+          <div class="additional-services-section" *ngIf="getAdditionalServices().length > 0">
+            <h4 class="section-title">خدمات اضافية</h4>
+            <div class="services-list">
+              <div 
+                *ngFor="let service of getAdditionalServices()" 
+                class="service-item"
+                [class.selected]="isServiceSelected(service.id)"
+                [class.disabled]="isDeliveryService(service)"
+                (click)="!isDeliveryService(service) && toggleService(service.id)"
+              >
+                <div class="service-content">
+                  <span class="service-name">{{ service.name }}</span>
+                  <span class="service-price">{{ getServicePriceDisplay(service) }}</span>
+                </div>
+                <div class="service-checkbox">
+                  <input  
+                    type="checkbox" 
+                    [checked]="isServiceSelected(service.id)"
+                    [disabled]="isDeliveryService(service)"
+                    (change)="toggleService(service.id)"
+                    (click)="$event.stopPropagation()"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Summary -->
+          <div class="order-summary">
+            <h4 class="section-title">ملخص الطلب</h4>
+            <div *ngIf="isLoadingPrice" class="summary-loading">
+              <span>جاري حساب السعر...</span>
+            </div>
+            <div *ngIf="!isLoadingPrice">
+              <div class="summary-item">
+                <span>{{ selectedCar.name }} {{ getCarPrice() }} ريال / {{ getPeriodLabel() }}</span>
+                <span class="summary-price">{{ formatNumber(priceData?.price_breakdown?.base_price || getSubtotal()) }} ريال</span>
+              </div>
+              <div class="summary-item">
+                <span>خدمات اضافية</span>
+                <span class="summary-price">{{ formatNumber(getSelectedServicesTotal()) }} ريال</span>
+              </div>
+              <div class="summary-item" *ngIf="(priceData?.price_breakdown?.discount ?? 0) > 0">
+                <span>الخصم</span>
+                <span class="summary-price discount">-{{ formatNumber(priceData?.price_breakdown?.discount || 0) }} ريال</span>
+              </div>
+              <div class="summary-item">
+                <span>رسوم التوصيل</span>
+                <span class="summary-price">{{ formatNumber(getDeliveryFees()) }} ريال</span>
+              </div>
+              <div class="summary-item">
+                <span>الضريبة</span>
+                <span class="summary-price">{{ formatNumber(getTotalTax()) }} ريال</span>
+              </div>
+              <div class="summary-item total">
+                <span>الاجمالي</span>
+                <span class="summary-price">{{ formatNumber(calculateTotal()) }} ريال</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Methods -->
+          <div class="payment-methods">
+            <h4 class="section-title">طريقة الدفع</h4>
+            <div class="payment-options" *ngIf="paymentMethods.length > 0">
+              <label *ngFor="let method of paymentMethods" class="payment-option" (click)="selectPaymentMethod(method.id)">
+                <input type="radio" name="payment" [value]="method.id" (change)="selectPaymentMethod(method.id)" [checked]="selectedPaymentMethod === method.id" (click)="$event.stopPropagation()">
+                <div class="payment-content">
+                  <!-- Cash payment: show image -->
+                  <div class="payment-icon" *ngIf="(method.type === 'cash' || method.name?.includes('أدفع نقدا عند الإستلام')) && (method.image || 'https://dev.tareqalqeyada.sa/images/payment_image.png')">
+                    <img [src]="method.image || 'https://dev.tareqalqeyada.sa/images/payment_image.png'" [alt]="method.name" class="payment-image">
+                  </div>
+                  <!-- Other payment methods: show SVG -->
+                  <div class="payment-icon" *ngIf="method.type !== 'cash' && !method.name?.includes('أدفع نقدا عند الإستلام')" [innerHTML]="getPaymentIconSVG(method.icon || 'visa-mastercard')"></div>
+                  <span class="payment-label">{{ method.name }}</span>
+                </div>
+              </label>
+            </div>
+            <div *ngIf="isLoadingPaymentMethods" class="payment-loading">
+              <span>جاري تحديث طرق الدفع...</span>
+            </div>
+          </div>
+
+          <!-- Confirm Button -->
+          <div class="confirm-button-wrapper">
+            <button type="button" class="confirm-btn" (click)="$event.stopPropagation(); onSubmit()" [disabled]="isLoading">
+              <span *ngIf="!isLoading">تأكيد</span>
+              <span *ngIf="isLoading" class="loading-content">
+                <span class="spinner-small"></span>
+                جاري المعالجة...
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Map Modal -->
+<div class="map-modal-overlay" *ngIf="showMapModal" (click)="closeMapModal()">
+  <div class="map-modal-container" (click)="$event.stopPropagation()">
+    <div class="map-modal-header">
+      <h3>اختر موقع الاستلام</h3>
+      <button class="map-close-btn" (click)="closeMapModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="map-content">
+      <div id="map" class="map-display">
+        <button class="current-location-btn" (click)="getCurrentLocation()" title="تحديد موقعي الحالي">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v4M12 18v4M4 12H2M6.31412 6.31412L4.8999 4.8999M17.6859 6.31412L19.1001 4.8999M6.31412 17.69L4.8999 19.1042M17.6859 17.69L19.1001 19.1042M22 12H20M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z"/>
+          </svg>
+          <span>موقعي الحالي</span>
+        </button>
+      </div>
+      <div class="map-search">
+        <input type="text" class="map-search-input" placeholder="ابحث عن موقع..." [(ngModel)]="mapSearchQuery" (keyup.enter)="searchLocation()">
+        <button class="map-search-btn" (click)="searchLocation()">بحث</button>
+      </div>
+    </div>
+    <div class="map-modal-footer">
+      <button class="map-cancel-btn" (click)="closeMapModal()">إلغاء</button>
+      <button class="map-confirm-btn" (click)="confirmLocation()" [disabled]="!selectedLocation">تأكيد</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <div class="loading-container" style="padding: 2rem; text-align: center;">
+    <div class="spinner" style="width: 50px; height: 50px; border: 4px solid rgba(107, 70, 193, 0.3); border-top-color: #6B46C1; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+    <p style="margin-top: 1rem; color: #6B7280;">جاري التحميل...</p>
+  </div>
+</ng-template>

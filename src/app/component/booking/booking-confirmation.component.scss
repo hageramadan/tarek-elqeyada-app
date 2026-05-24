@@ -1,0 +1,137 @@
+@import '../auth/login/login.component.scss';
+
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  max-height: 100vh !important;
+  z-index: 10001 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  // Prevent scrolling the body when modal is open
+  overscroll-behavior: contain !important;
+  // iOS Safari fixes
+  -webkit-transform: translateZ(0) !important;
+  transform: translateZ(0) !important;
+  -webkit-backface-visibility: hidden !important;
+  backface-visibility: hidden !important;
+  will-change: transform !important;
+  -webkit-overflow-scrolling: touch !important;
+  overflow-scrolling: touch !important;
+  -webkit-perspective: 1000px !important;
+  perspective: 1000px !important;
+  // Ensure modal is always centered regardless of scroll
+  inset: 0 !important;
+}
+
+.modal-container {
+  max-width: 450px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 16px;
+  position: relative;
+  box-sizing: border-box;
+  margin: auto !important;
+  align-self: center !important;
+  flex-shrink: 0 !important;
+  animation: slideUp 0.3s ease;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
+  // Ensure it's centered vertically and horizontally
+  transform: translateZ(0) !important;
+  -webkit-transform: translateZ(0) !important;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 1rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .modal-container {
+    width: 95% !important;
+    max-width: 95vw !important;
+    max-height: 90vh !important;
+    margin: auto !important;
+  }
+}
+
+.confirmation-content {
+  padding: 3rem 2rem;
+  text-align: center;
+  direction: rtl;
+
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: #d1fae5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #10b981;
+
+    svg {
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  .success-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: var(--text-dark, #1a1a1a);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .success-message {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0 0 2rem 0;
+  }
+
+  .home-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary-purple, #6b46c1);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: var(--primary-purple-dark, #553c9a);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
+    }
+  }
+}

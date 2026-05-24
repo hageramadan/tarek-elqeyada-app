@@ -1,0 +1,405 @@
+.review-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  direction: rtl;
+
+  .review-header {
+    // text-align: center;
+    margin-bottom: 2rem;
+
+    h2 {
+      color: #1F2937;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .review-content {
+    .two-columns {
+      display: flex;
+      gap: 2rem;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+      }
+      
+      .right-column, .left-column {
+        flex: 1;
+      }
+    }
+  }
+
+  .car-info-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+    .car-image {
+      width: 120px;
+      height: 80px;
+      border-radius: 8px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .car-details {
+      // flex: 1;
+
+      h3 {
+        margin: 0 0 0.5rem 0;
+        color: #1F2937;
+      }
+
+      .car-features {
+        display: flex;
+        gap: 0.5rem;
+        
+        span {
+          font-size: 0.85rem;
+          color: #6B7280;
+        }
+      }
+    }
+
+    .car-price {
+      text-align: left;
+      
+      .price {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #6B46C1;
+      }
+      
+      .period {
+        font-size: 0.85rem;
+        color: #6B7280;
+      }
+    }
+  }
+
+  .booking-details,
+  .customer-info,
+  .order-summary,
+  .payment-methods {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+    h4 {
+      margin: 0 0 1rem 0;
+      color: #1F2937;
+      font-size: 1.2rem;
+      // border-right: 3px solid #6B46C1;
+      // padding-right: 0.75rem;
+    }
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      
+      .label {
+        color: #6B7280;
+        font-weight: 500;
+      }
+      
+      .value {
+        color: #1F2937;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .order-summary {
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 0px solid #E5E7EB;
+
+      &:last-child {
+        border-bottom:  1px solid #E5E7EB;;
+      }
+
+      &.total {
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #1F2937;
+        border-top: 2px solid #E5E7EB;
+        border-bottom: none;
+        padding-top: 1rem;
+        margin-top: 0.5rem;
+      }
+
+      .summary-price {
+        font-weight: 600;
+        color: #6B46C1;
+      }
+    }
+  }
+
+  .payment-methods {
+    .payment-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+
+      .payment-option {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          border-color: #6B46C1;
+          background: #F9F5FF;
+        }
+
+        input[type="radio"] {
+          margin-left: 1rem;
+          accent-color: #6B46C1;
+          width: 18px;
+          height: 18px;
+        }
+
+        .payment-content {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          flex: 1;
+
+          .payment-icon {
+            width: 50px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .payment-image {
+              max-width: 100%;
+              max-height: 100%;
+              object-fit: contain;
+            }
+          }
+
+          .payment-label {
+            font-weight: 500;
+            color: #1F2937;
+          }
+        }
+      }
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    button {
+      flex: 1;
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+
+      &.back-btn {
+        background: #F3F4F6;
+        color: #4B5563;
+
+        &:hover {
+          background: #E5E7EB;
+        }
+      }
+
+      &.confirm-btn {
+        background: #6B46C1;
+        color: white;
+
+        &:hover:not(:disabled) {
+          background: #553C9A;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  .loading-container {
+    text-align: center;
+    padding: 3rem;
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(107, 70, 193, 0.3);
+      border-top-color: #6B46C1;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.paymob-iframe-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paymob-iframe-container {
+  width: 90%;
+  height: 90%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.paymob-iframe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #6B46C1;
+  color: white;
+}
+
+.close-iframe-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.paymob-iframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+}
+
+.car-info-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  
+  // ترتيب جديد: الصورة جنب السعر، وتحته التفاصيل
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+
+  // الصف الأول: الصورة والسعر بجانب بعض
+  .car-header {
+    display: flex;
+    // align-items: center;
+    width: 100%;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+
+    .car-image {
+      flex: 2;
+      width: 120px;
+      height: 80px;
+      border-radius: 8px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .car-price-box {
+      flex: 1;
+      text-align: center;
+      
+      padding: 0.75rem 1rem;
+   
+     
+
+      .car-price {
+        .price {
+          font-size: 1.4rem;
+          font-weight: bold;
+          color: #6B46C1;  // نفس اللون الأساسي حقك
+        }
+        .period {
+          font-size: 0.85rem;
+          color: #6B7280;
+        }
+      }
+    }
+  }
+
+  // الصف الثاني: تفاصيل السيارة (الاسم + المميزات)
+  .car-info {
+    width: 100%;
+    .car-name {
+      h3 {
+        margin: 0 0 0.5rem 0;
+        color: #1F2937;
+        font-size: 1.2rem;
+      }
+    }
+
+    .car-features {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+
+      span {
+        font-size: 0.85rem;
+        color: #6B7280;
+        background: #F3F4F6;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+      }
+    }
+  }
+}
