@@ -603,6 +603,9 @@
 }
 
 @media (max-width: 480px) {
+   .car-card{
+     padding: 7px;
+  }
   .car-categories-container {
     .car-card .car-image-container {
       height: 160px;
@@ -639,10 +642,10 @@
   
   .car-card {
     width: 100%;
-    margin-right: 8px;
+    margin-right: 0px;
     
     &:last-child {
-      margin-right: 16px;
+      margin-right: 0px;
     }
   }
 }

@@ -138,7 +138,7 @@ export class CarsComponent implements OnInit, AfterViewInit, OnDestroy {
         // إعدادات الـ Swiper لعرض 3 كروت
         const swiperParams = {
           slidesPerView: 1.5,
-          spaceBetween: 16,
+          spaceBetween: 5,
           rtl: true,
           speed: 500,
           observer: true,

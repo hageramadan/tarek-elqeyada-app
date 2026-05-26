@@ -266,7 +266,7 @@
 // Tablet styles
 @media (max-width: 1024px) {
   .slider-container {
-    height: 60vh;
+    height: 50vh;
     min-height: 450px;
 
     .slide {
@@ -294,7 +294,7 @@
 // Mobile styles
 @media (max-width: 768px) {
   .slider-container {
-    height: 50vh;
+    height:45vh;
     min-height: 400px;
 
     .slide {
@@ -338,7 +338,7 @@
 // Small mobile styles
 @media (max-width: 480px) {
   .slider-container {
-    height: 45vh;
+    height: 35vh;
     min-height: 350px;
 
     .slide {
