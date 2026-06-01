@@ -37,7 +37,7 @@
         z-index: 1;
         text-align: center;
         background: #F5F5F5;
-        font-family: 'Almarai', sans-serif;
+         font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
         &:hover:not(.active) {
           background: #F5F5F5;
@@ -495,7 +495,7 @@
         color: #FFFFFF;
         font-size: 1rem;
         font-weight: 600;
-        font-family: 'Almarai', sans-serif;
+         font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         cursor: pointer;
         margin-bottom: 1.5rem;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

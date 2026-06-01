@@ -306,7 +306,8 @@
         cursor: pointer;
         transition: all 0.3s ease;
         margin-bottom: 0.75rem;
-        font-family: 'Almarai', sans-serif;
+              font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
       }
 
       .btn-login-mobile {
@@ -339,7 +340,8 @@
         font-weight: 500;
         font-size: 1rem;
         transition: color 0.3s ease;
-        font-family: 'Almarai', sans-serif;
+              font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
 
         &:hover {
           color: #6B46C1 !important;

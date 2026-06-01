@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
 
 .booking-details-card {
-  font-family: 'Almarai', sans-serif;
+   font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #FFFFFF;
   border-radius: 12px;
   padding: 0;
@@ -268,7 +268,7 @@
       font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-family: 'Almarai', sans-serif;
+       font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
       &.btn-extend {
         background: #7B42FF;
@@ -616,7 +616,7 @@
       font-size: 1rem;
       font-weight: 500;
       margin: 0;
-      font-family: 'Almarai', sans-serif;
+       font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
   }
 }

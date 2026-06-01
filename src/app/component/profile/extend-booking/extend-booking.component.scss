@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
 
 .extend-booking-container {
-  font-family: 'Almarai', sans-serif;
+   font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   direction: rtl;
   width: 100%;
   display: flex;
@@ -24,7 +24,7 @@
   border-bottom: 1px solid #EDEDED;
 
   .card-title {
-    font-family: 'Almarai', sans-serif;
+     font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 1.5rem;
     font-weight: 700;
     color: #1F2937;
@@ -50,7 +50,7 @@
     justify-content: space-between;
 
     .days-label {
-      font-family: 'Almarai', sans-serif;
+       font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       font-size: 1rem;
       font-weight: 600;
       color: #1F2937;
@@ -58,7 +58,7 @@
     }
 
     .days-count {
-      font-family: 'Almarai', sans-serif;
+       font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       font-size: 1rem;
       font-weight: 600;
       color: #1F2937;
@@ -127,7 +127,7 @@
       border-left: none;
       border-right: none;
       text-align: center;
-      font-family: 'Almarai', sans-serif;
+       font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       font-size: 1rem;
       font-weight: 600;
       color: #1F2937;
@@ -159,7 +159,7 @@
   gap: 1rem;
 
   .date-label {
-    font-family: 'Almarai', sans-serif;
+     font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 1rem;
     font-weight: 600;
     color: #1F2937;
@@ -167,7 +167,7 @@
   }
 
   .date-value {
-    font-family: 'Almarai', sans-serif;
+     font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 1rem;
     font-weight: 400;
     color: #717182;
@@ -189,7 +189,7 @@
   color: #FFFFFF;
   border: none;
   border-radius: 8px;
-  font-family: 'Almarai', sans-serif;
+   font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -282,14 +282,14 @@
       color: #1F2937;
       margin-bottom: 0.5rem;
       font-weight: 600;
-      font-family: 'Almarai', sans-serif;
+       font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     p {
       color: #6B7280;
       margin-bottom: 2rem;
       font-size: 1rem;
-      font-family: 'Almarai', sans-serif;
+       font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .btn-primary {
@@ -301,7 +301,7 @@
       border-radius: 8px;
       font-size: 1rem;
       font-weight: 500;
-      font-family: 'Almarai', sans-serif;
+       font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       cursor: pointer;
       transition: all 0.3s ease;
 
@@ -325,7 +325,7 @@
     font-weight: 600;
     color: #1f2937;
     margin-bottom: 1rem;
-    font-family: 'Almarai', sans-serif;
+     font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 
   .summary-item {
@@ -336,7 +336,7 @@
     font-size: 0.95rem;
     color: #4b5563;
     border-bottom: 1px solid #e5e7eb;
-    font-family: 'Almarai', sans-serif;
+     font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
     &:last-child {
       border-bottom: none;
@@ -378,7 +378,7 @@
     font-weight: 600;
     color: #1F2937;
     margin-bottom: 16px;
-    font-family: 'Almarai', sans-serif;
+     font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 
   .payment-options {
@@ -447,7 +447,7 @@
         .payment-label {
           font-size: 0.95rem;
           color: #1f2937;
-          font-family: 'Almarai', sans-serif;
+           font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
       }
 
