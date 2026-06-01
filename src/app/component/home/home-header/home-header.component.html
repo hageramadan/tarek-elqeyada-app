@@ -1,9 +1,9 @@
 <div class="slider-container">
-  <div class="loading-overlay" *ngIf="isLoading">
+  <!-- <div class="loading-overlay" *ngIf="isLoading">
     <div class="spinner"></div>
-  </div>
+  </div> -->
   
-  <div class="slider-wrapper" *ngIf="!isLoading && slides.length > 0">
+  <div class="slider-wrapper" *ngIf=" slides.length > 0">
     <div 
       class="slide" 
       *ngFor="let slide of slides; let i = index"
@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  <div class="slider-indicators" *ngIf="!isLoading && slides.length > 1">
+  <div class="slider-indicators" *ngIf="slides.length > 1">
     <span 
       *ngFor="let slide of slides; let i = index"
       class="indicator"

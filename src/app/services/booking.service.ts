@@ -204,7 +204,7 @@ export interface CalculatePriceResponse {
   providedIn: 'root'
 })
 export class BookingService {
-  private apiUrl = 'https://dev.tareqalqeyada.sa/api/bookings';
+  private apiUrl = 'https://admin.tareqalqeyada.sa/api/bookings';
 
   constructor(private http: HttpClient) { }
 
@@ -360,6 +360,6 @@ export class BookingService {
    * Get booking terms
    */
   getBookingTerms(): Observable<any> {
-    return this.http.get<any>('https://dev.tareqalqeyada.sa/api/booking-terms');
+    return this.http.get<any>('https://admin.tareqalqeyada.sa/api/booking-terms');
   }
 }

@@ -1,18 +1,18 @@
 <div class="car-categories-container">
   <div class="container">
-    <div class="book-now-section" [class.loaded]="!isLoading">
+    <div class="book-now-section" >
       <h1 class="section-title">احجز الان</h1>
     </div>
 
     <!-- Loading State -->
-    <div class="loading-container" *ngIf="isLoading">
+    <!-- <div class="loading-container" *ngIf="isLoading">
       <div class="spinner"></div>
-    </div>
+    </div> -->
 
     <!-- ========== 1. سلايدر 1: التأجير اليومي - سيارات اقتصادية ========== -->
     <div
       class="category-slider-section"
-      *ngIf="!isLoading && displayedDailyEconomicCars.length > 0"
+      *ngIf=" displayedDailyEconomicCars.length > 0"
     >
       <div class="section-header">
         <h2 class="category-label">
@@ -189,7 +189,7 @@
     <!-- ========== 2. سلايدر 2: التأجير اليومي - سيارات متوسطة ========== -->
     <div
       class="category-slider-section"
-      *ngIf="!isLoading && displayedDailySuvCars.length > 0"
+      *ngIf=" displayedDailySuvCars.length > 0"
     >
       <div class="section-header">
         <h2 class="category-label">
@@ -366,7 +366,7 @@
     <!-- ========== 3. سلايدر 3: التأجير الشهري - سيارات اقتصادية ========== -->
     <div
       class="category-slider-section"
-      *ngIf="!isLoading && displayedMonthlyEconomicCars.length > 0"
+      *ngIf="displayedMonthlyEconomicCars.length > 0"
     >
       <div class="section-header">
         <h2 class="category-label">
@@ -546,7 +546,7 @@
     <!-- ========== 4. سلايدر 4: التأجير الشهري - سيارات متوسطة ========== -->
     <div
       class="category-slider-section"
-      *ngIf="!isLoading && displayedMonthlySuvCars.length > 0"
+      *ngIf="displayedMonthlySuvCars.length > 0"
     >
       <div class="section-header">
         <h2 class="category-label">
@@ -721,8 +721,8 @@
     </div>
 
     <!-- No Cars Message -->
-    <div class="no-cars-message" *ngIf="!isLoading && !hasAnyCars">
+    <!-- <div class="no-cars-message" *ngIf="!hasAnyCars">
       <p>لا توجد سيارات متاحة</p>
-    </div>
+    </div> -->
   </div>
 </div>

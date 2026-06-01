@@ -6,6 +6,10 @@ import { filter } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { BookingService } from './services/booking.service';
 import { SettingsService } from './services/settings.service';
+import { AppStateService } from './services/app-state.service';
+import { SliderService } from './services/slider.service';
+import { CarService } from './services/car.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -13,25 +17,43 @@ import { SettingsService } from './services/settings.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
+  
   currentModal: ModalType = null;
   previousModal: ModalType = null;
   whatsappUrl: string = 'https://wa.me/966920051022';
   private modalSubscription?: Subscription;
   private routerSubscription?: Subscription;
+  
+  // Loading state variables
+  isLoading = true;
 
   constructor(
     private modalService: ModalService,
     private router: Router,
     private toastr: ToastrService,
     private bookingService: BookingService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private appStateService: AppStateService,
+    private sliderService: SliderService,
+    private carService: CarService
   ) {}
 
   ngOnInit() {
+    console.log('🟢 Starting application - isLoading = true');
+    
+    // Force show loader
+    this.isLoading = true;
+    this.appStateService.setLoading(true);
+
+    // Subscribe to loading state from service
+    this.appStateService.isLoading$.subscribe(state => {
+      console.log('🔄 isLoading state changed to:', state);
+      this.isLoading = state;
+    });
+
     this.modalSubscription = this.modalService.getCurrentModal().subscribe(
       modal => {
         this.currentModal = modal;
-        // Update previous modal when current modal changes
         this.previousModal = this.modalService.getPreviousModal();
       }
     );
@@ -45,9 +67,11 @@ export class AppComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error loading settings for WhatsApp:', error);
-        // Keep default WhatsApp URL
       }
     });
+
+    // Load initial page data
+    this.loadInitialData();
 
     // Check for payment callback parameters on navigation
     this.routerSubscription = this.router.events
@@ -56,11 +80,68 @@ export class AppComponent implements OnInit, OnDestroy {
         this.checkPaymentCallback();
       });
 
-    // Check on initial load
     this.checkPaymentCallback();
-
-    // Check for pending booking on app load (in case user closed browser and came back)
     this.checkPendingBooking();
+  }
+
+  /**
+   * Load all initial data for the homepage - waits for ALL data to complete
+   */
+  loadInitialData() {
+    // Check if we are on the homepage
+    const isHomePage = this.router.url === '/' || this.router.url === '/home';
+    
+    if (isHomePage) {
+      console.log('🏠 Homepage detected - loading data (loader will stay until ALL data is loaded)');
+      
+      // Fetch all required data for the homepage
+      forkJoin({
+        sliders: this.sliderService.getSliders(),
+        economicDaily: this.carService.getCarsByCategoryAndPeriod(1, 'daily'),
+        economicMonthly: this.carService.getCarsByCategoryAndPeriod(1, 'monthly'),
+        suvDaily: this.carService.getCarsByCategoryAndPeriod(6, 'daily'),
+        suvMonthly: this.carService.getCarsByCategoryAndPeriod(6, 'monthly')
+      })
+      .subscribe({
+        next: (result) => {
+          console.log('📦 All data loaded successfully');
+          console.log('Sliders:', result.sliders.length);
+          console.log('Economic Daily Cars:', result.economicDaily.length);
+          console.log('Economic Monthly Cars:', result.economicMonthly.length);
+          console.log('SUV Daily Cars:', result.suvDaily.length);
+          console.log('SUV Monthly Cars:', result.suvMonthly.length);
+          
+          // Store data in sessionStorage for components to access
+          sessionStorage.setItem('carsData', JSON.stringify({
+            dailyEconomicCars: result.economicDaily,
+            dailySuvCars: result.suvDaily,
+            monthlyEconomicCars: result.economicMonthly,
+            monthlySuvCars: result.suvMonthly
+          }));
+          
+          // Hide loader ONLY after all data is loaded
+          console.log('✅ All data complete - hiding loader now');
+          this.isLoading = false;
+          this.appStateService.hideLoader();
+        },
+        error: (error) => {
+          console.error('❌ Error loading data:', error);
+          // Even if there's an error, hide loader after 1 second
+          setTimeout(() => {
+            console.log('⚠️ Hiding loader due to error');
+            this.isLoading = false;
+            this.appStateService.hideLoader();
+          }, 1000);
+        }
+      });
+    } else {
+      // If not homepage, hide loader immediately
+      console.log('🚫 Not homepage - hiding loader immediately');
+      setTimeout(() => {
+        this.isLoading = false;
+        this.appStateService.hideLoader();
+      }, 100);
+    }
   }
 
   /**
@@ -73,10 +154,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const paymentStatus = urlParams.get('payment_status');
     const paymentId = urlParams.get('payment_id');
 
-    // Store payment_id if present in URL
     if (paymentId) {
-      
-      // Store in sessionStorage for later use
       const pendingBooking = sessionStorage.getItem('pending_booking');
       if (pendingBooking) {
         try {
@@ -90,10 +168,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     if (success === 'true' || status === 'success' || paymentStatus === 'success') {
-      // Payment was successful, check for pending booking
       this.handlePaymentCallback(true);
     } else if (success === 'false' || status === 'failed' || paymentStatus === 'failed') {
-      // Payment failed
       this.handlePaymentCallback(false);
     }
   }
@@ -105,14 +181,11 @@ export class AppComponent implements OnInit, OnDestroy {
     const pendingBooking = sessionStorage.getItem('pending_booking');
     if (pendingBooking) {
       if (success) {
-        // Create booking after successful payment
         this.createBookingAfterPayment();
       } else {
-        // Payment failed, clear pending booking
         sessionStorage.removeItem('pending_booking');
         this.toastr.error('فشل الدفع. يرجى المحاولة مرة أخرى', 'خطأ');
       }
-      // Clear URL parameters
       this.router.navigate([this.router.url.split('?')[0]], {
         queryParams: {},
         replaceUrl: true
@@ -126,7 +199,6 @@ export class AppComponent implements OnInit, OnDestroy {
   checkPendingBooking() {
     const pendingBooking = sessionStorage.getItem('pending_booking');
     if (pendingBooking) {
-      // Check if booking was created more than 30 minutes ago (expired)
       try {
         const bookingData = JSON.parse(pendingBooking);
         const bookingTime = bookingData.timestamp || 0;
@@ -134,12 +206,7 @@ export class AppComponent implements OnInit, OnDestroy {
         const thirtyMinutes = 30 * 60 * 1000;
         
         if (now - bookingTime > thirtyMinutes) {
-          // Booking expired, clear it
           sessionStorage.removeItem('pending_booking');
-         
-        } else {
-          // Booking still valid, user might want to retry
-          
         }
       } catch (e) {
         console.error('Error checking pending booking:', e);
@@ -168,20 +235,13 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     const bookingRequest = bookingData.bookingRequest;
-    
 
     this.bookingService.createBooking(bookingRequest).subscribe({
       next: (response) => {
-       
         if (response.result) {
-        
-          // Clear pending booking from session
           sessionStorage.removeItem('pending_booking');
-          
-          // Show confirmation
           this.modalService.openModal('booking-confirmation');
         } else {
-          
           this.toastr.error(response.message || 'حدث خطأ أثناء إنشاء الحجز', 'خطأ');
         }
       },
@@ -191,6 +251,12 @@ export class AppComponent implements OnInit, OnDestroy {
         this.toastr.error(errorMessage, 'خطأ');
       }
     });
+  }
+
+  onLogoError(event: Event) {
+    const img = event.target as HTMLImageElement;
+    console.error('Logo failed to load. Attempted path:', img.src);
+    img.src = '/assets/images/nav-logo.png';
   }
 
   ngOnDestroy() {

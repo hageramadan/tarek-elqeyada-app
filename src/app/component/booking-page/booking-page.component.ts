@@ -136,7 +136,7 @@ export class BookingPageComponent implements OnInit, OnDestroy {
       this.bookingType = savedPeriod;
     }
 
-    this.http.get<any>(`https://dev.tareqalqeyada.sa/api/v2/cars/${carId}`).subscribe({
+    this.http.get<any>(`https://admin.tareqalqeyada.sa/api/v2/cars/${carId}`).subscribe({
       next: (response) => {
         console.log('📦 Direct API response:', response);
         if (response.result && response.data?.data) {
@@ -464,7 +464,7 @@ export class BookingPageComponent implements OnInit, OnDestroy {
       'Content-Type': 'application/json',
     });
 
-    this.http.post('https://dev.tareqalqeyada.sa/api/pay/checkout', payload, { headers }).subscribe({
+    this.http.post('https://admin.tareqalqeyada.sa/api/pay/checkout', payload, { headers }).subscribe({
       next: (response: any) => {
         console.log('Checkout response:', response);
         this.handlePaymentResponse(response, methodName);

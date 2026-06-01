@@ -629,7 +629,7 @@ private checkAndUpdatePaymentStatus(): void {
         'Content-Type': 'application/json',
       });
 
-      this.http.post('https://dev.tareqalqeyada.sa/api/pay/checkout', payload, { headers })
+      this.http.post('https://admin.tareqalqeyada.sa/api/pay/checkout', payload, { headers })
         .subscribe({
           next: (response: any) => {
             console.log('Retry payment response:', response);

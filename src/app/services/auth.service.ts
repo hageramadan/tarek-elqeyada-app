@@ -49,7 +49,7 @@ export interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://dev.tareqalqeyada.sa/api/user';
+  private apiUrl = 'https://admin.tareqalqeyada.sa/api/user';
 
   constructor(private http: HttpClient) { }
 

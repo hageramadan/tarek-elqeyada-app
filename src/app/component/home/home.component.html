@@ -1,3 +1,10 @@
-<app-home-header></app-home-header>
-<app-car-categories></app-car-categories>
-<app-app-download></app-app-download>
+<div class="page-content">
+  <app-home-header></app-home-header>
+  <app-car-categories
+    [allDailyEconomicCars]="dailyEconomicCars"
+    [allDailySuvCars]="dailySuvCars"
+    [allMonthlyEconomicCars]="monthlyEconomicCars"
+    [allMonthlySuvCars]="monthlySuvCars"
+  ></app-car-categories>
+  <app-app-download></app-app-download>
+</div>

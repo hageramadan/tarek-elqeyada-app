@@ -23,7 +23,7 @@ export interface SliderResponse {
   providedIn: 'root'
 })
 export class SliderService {
-  private apiUrl = 'https://dev.tareqalqeyada.sa/api/user/sliders';
+  private apiUrl = 'https://admin.tareqalqeyada.sa/api/user/sliders';
 
   constructor(private http: HttpClient) { }
 

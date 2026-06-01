@@ -18,8 +18,8 @@ export class HomeHeaderComponent implements OnInit, OnDestroy {
   currentSlide = 0;
   private autoSlideInterval: any;
   slides: Slide[] = [];
-  isLoading = true;
-  private readonly sliderApiOrigin = 'https://dev.tareqalqeyada.sa';
+  // isLoading = true;
+  private readonly sliderApiOrigin = 'https://admin.tareqalqeyada.sa';
 
   // Fixed content for all slides
   private readonly fixedContent = {
@@ -70,7 +70,7 @@ export class HomeHeaderComponent implements OnInit, OnDestroy {
           }];
         }
 
-        this.isLoading = false;
+        // this.isLoading = false;
         this.startAutoSlide();
       },
       error: (error) => {
@@ -82,7 +82,7 @@ export class HomeHeaderComponent implements OnInit, OnDestroy {
           image: this.fallbackImage,
           buttonText: this.fixedContent.buttonText
         }];
-        this.isLoading = false;
+        // this.isLoading = false;
         this.startAutoSlide();
       }
     });

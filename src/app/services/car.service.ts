@@ -70,7 +70,7 @@ export interface CarsResponse {
   providedIn: 'root'
 })
 export class CarService {
-  private apiUrl = 'https://dev.tareqalqeyada.sa/api/v2/cars';
+  private apiUrl = 'https://admin.tareqalqeyada.sa/api/v2/cars';
 
   constructor(private http: HttpClient) { }
 
@@ -122,7 +122,7 @@ getCarById(id: number): Observable<Car | null> {
  * @param periodType نوع الفترة (daily أو monthly)
  */
 getCarsByCategoryAndPeriod(categoryId: number, periodType: string): Observable<Car[]> {
-  const url = `https://dev.tareqalqeyada.sa/api/v2/cars?popular=0&car_category_id=${categoryId}&period_type=${periodType}`;
+  const url = `https://admin.tareqalqeyada.sa/api/v2/cars?popular=0&car_category_id=${categoryId}&period_type=${periodType}`;
   
   return this.http.get<any>(url).pipe(
     map(response => {

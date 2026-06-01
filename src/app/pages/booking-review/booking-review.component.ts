@@ -355,7 +355,7 @@ export class BookingReviewComponent implements OnInit {
     });
 
     this.http
-      .post('https://dev.tareqalqeyada.sa/api/pay/checkout', payload, {
+      .post('https://admin.tareqalqeyada.sa/api/pay/checkout', payload, {
         headers,
       })
       .subscribe({

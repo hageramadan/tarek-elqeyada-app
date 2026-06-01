@@ -1,9 +1,8 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CarCategory } from '../../../services/category.service';
 import { Car, CarService } from '../../../services/car.service';
 import { ModalService } from '../../../services/modal.service';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
 
 // Import Swiper and register custom elements
 import { register } from 'swiper/element/bundle';
@@ -33,22 +32,23 @@ interface SwiperElement extends HTMLElement {
   templateUrl: './car-categories.component.html',
   styleUrl: './car-categories.component.scss',
 })
-export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   categories: CarCategory[] = [];
 
-  // المتغيرات للسيارات الكاملة (جميع السيارات من API)
-  allDailyEconomicCars: Car[] = [];
-  allDailySuvCars: Car[] = [];
-  allMonthlyEconomicCars: Car[] = [];
-  allMonthlySuvCars: Car[] = [];
+  // استقبال البيانات من الصفحة الرئيسية عبر @Input()
+  @Input() allDailyEconomicCars: Car[] = [];
+  @Input() allDailySuvCars: Car[] = [];
+  @Input() allMonthlyEconomicCars: Car[] = [];
+  @Input() allMonthlySuvCars: Car[] = [];
 
-  // المتغيرات للسيارات المعروضة حالياً (مع عرض المزيد)
+  // المتغيرات للسيارات المعروضة حالياً
   displayedDailyEconomicCars: Car[] = [];
   displayedDailySuvCars: Car[] = [];
   displayedMonthlyEconomicCars: Car[] = [];
   displayedMonthlySuvCars: Car[] = [];
 
-  isLoading = true;
+  // متغير لتتبع ما إذا كانت البيانات قد تم تحميلها
+  private dataLoaded = false;
   
   // تخزين مراجع لعناصر Swiper في DOM
   private swiperElements: Map<string, SwiperElement> = new Map();
@@ -60,14 +60,38 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy 
   ) {}
 
   ngOnInit() {
-    this.loadCarsByCategoryAndPeriod();
+    // لا نقوم بجلب البيانات هنا، بل ننتظرها من Input
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // عندما تتغير البيانات المدخلة (عند تحميلها من الصفحة الرئيسية)
+    if (changes['allDailyEconomicCars'] && changes['allDailyEconomicCars'].currentValue ||
+        changes['allDailySuvCars'] && changes['allDailySuvCars'].currentValue ||
+        changes['allMonthlyEconomicCars'] && changes['allMonthlyEconomicCars'].currentValue ||
+        changes['allMonthlySuvCars'] && changes['allMonthlySuvCars'].currentValue) {
+      
+      this.updateDisplayedCars();
+      
+      // تهيئة Swipers بعد تحميل البيانات
+      setTimeout(() => {
+        if (this.hasAnyCars && !this.dataLoaded) {
+          this.dataLoaded = true;
+          this.initializeSwipers();
+        } else if (this.hasAnyCars) {
+          this.updateAllSwipers();
+        }
+      }, 200);
+    }
   }
 
   ngAfterViewInit() {
-    // إعداد الـ Swipers بعد تحميل العرض
-    setTimeout(() => {
-      this.initializeSwipers();
-    }, 500);
+    // إذا كانت البيانات موجودة بالفعل، قم بتهيئة Swipers
+    if (this.hasAnyCars && !this.dataLoaded) {
+      setTimeout(() => {
+        this.dataLoaded = true;
+        this.initializeSwipers();
+      }, 500);
+    }
   }
 
   ngOnDestroy() {
@@ -80,53 +104,22 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy 
     this.swiperElements.clear();
   }
 
-  /**
-   * جلب السيارات باستخدام 4 طلبات متوازية
-   */
-  loadCarsByCategoryAndPeriod() {
-    this.isLoading = true;
-
-    const economicDaily$ = this.carService.getCarsByCategoryAndPeriod(1, 'daily');
-    const economicMonthly$ = this.carService.getCarsByCategoryAndPeriod(1, 'monthly');
-    const suvDaily$ = this.carService.getCarsByCategoryAndPeriod(6, 'daily');
-    const suvMonthly$ = this.carService.getCarsByCategoryAndPeriod(6, 'monthly');
-
-    forkJoin({
-      economicDaily: economicDaily$,
-      economicMonthly: economicMonthly$,
-      suvDaily: suvDaily$,
-      suvMonthly: suvMonthly$,
-    }).subscribe({
-      next: (results) => {
-        this.allDailyEconomicCars = results.economicDaily;
-        this.allDailySuvCars = results.suvDaily;
-        this.allMonthlyEconomicCars = results.economicMonthly;
-        this.allMonthlySuvCars = results.suvMonthly;
-
-        this.updateDisplayedCars();
-        this.isLoading = false;
-
-        // إعادة تهيئة الـ Swipers بعد تحديث البيانات
-        setTimeout(() => {
-          this.initializeSwipers();
-        }, 100);
-      },
-      error: (error) => {
-        console.error('Error loading cars:', error);
-        this.isLoading = false;
-      },
+  updateDisplayedCars() {
+    this.displayedDailyEconomicCars = [...this.allDailyEconomicCars];
+    this.displayedDailySuvCars = [...this.allDailySuvCars];
+    this.displayedMonthlyEconomicCars = [...this.allMonthlyEconomicCars];
+    this.displayedMonthlySuvCars = [...this.allMonthlySuvCars];
+    
+    console.log('✅ تم تحديث بيانات السيارات:', {
+      economicDaily: this.displayedDailyEconomicCars.length,
+      suvDaily: this.displayedDailySuvCars.length,
+      economicMonthly: this.displayedMonthlyEconomicCars.length,
+      suvMonthly: this.displayedMonthlySuvCars.length
     });
   }
 
-  updateDisplayedCars() {
-    this.displayedDailyEconomicCars = this.allDailyEconomicCars;
-    this.displayedDailySuvCars = this.allDailySuvCars;
-    this.displayedMonthlyEconomicCars = this.allMonthlyEconomicCars;
-    this.displayedMonthlySuvCars = this.allMonthlySuvCars;
-  }
-
   /**
-   * تهيئة كل Swiper على حدة عن طريق ضبط خصائصه في DOM
+   * تهيئة كل Swiper على حدة
    */
   private initializeSwipers() {
     const swiperIds = ['slider1', 'slider2', 'slider3', 'slider4'];
@@ -135,7 +128,6 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy 
       const swiperEl = document.querySelector(`#${id}`) as SwiperElement;
       if (swiperEl && !this.swiperElements.has(id)) {
         
-        // إعدادات الـ Swiper لعرض 3 كروت
         const swiperParams = {
           slidesPerView: 1.5,
           spaceBetween: 5,
@@ -145,11 +137,11 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy 
           observeParents: true,
           centeredSlides: false,
           breakpoints: {
-              0: { 
-            slidesPerView: 1.5, 
-            spaceBetween: 12,
-            centeredSlides: false,
-          },
+            0: { 
+              slidesPerView: 1.5, 
+              spaceBetween: 12,
+              centeredSlides: false,
+            },
             640: { slidesPerView: 1.5, spaceBetween: 16 },
             768: { slidesPerView: 2, spaceBetween: 20 },
             1024: { slidesPerView: 2.5, spaceBetween: 20 },
@@ -157,14 +149,11 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy 
           }
         };
 
-        // تطبيق الإعدادات على العنصر
         Object.assign(swiperEl, swiperParams);
 
-        // الحصول على أزرار التنقل
         const prevBtn = document.querySelector(`.${id.replace('slider', 'slider')}-prev`);
         const nextBtn = document.querySelector(`.${id.replace('slider', 'slider')}-next`);
         
-        // إعداد أزرار التنقل
         if (prevBtn && nextBtn) {
           Object.assign(swiperEl, {
             navigation: {
@@ -174,10 +163,7 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy 
           });
         }
 
-        // تهيئة الـ Swiper
         swiperEl.initialize();
-        
-        // تخزين مرجع لعنصر Swiper
         this.swiperElements.set(id, swiperEl);
         console.log(`✅ Swiper ${id} initialized`);
       }
@@ -199,40 +185,39 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy 
    * التحقق من وجود سيارات في أي قسم
    */
   get hasAnyCars(): boolean {
-    return this.displayedDailyEconomicCars.length > 0 ||
-           this.displayedDailySuvCars.length > 0 ||
-           this.displayedMonthlyEconomicCars.length > 0 ||
-           this.displayedMonthlySuvCars.length > 0;
+    return this.displayedDailyEconomicCars?.length > 0 ||
+           this.displayedDailySuvCars?.length > 0 ||
+           this.displayedMonthlyEconomicCars?.length > 0 ||
+           this.displayedMonthlySuvCars?.length > 0;
   }
 
   /**
    * دالة مساعدة للـ *ngFor مع trackBy لتحسين الأداء
    */
   trackByCarId(index: number, car: Car): number {
-    return car.id;
+    return car?.id || index;
   }
 
   // ========== دوال عرض بيانات السيارة ==========
   
   getCarPrice(car: Car, periodType: 'daily' | 'monthly' = 'daily'): number {
-    if (car.details && car.details.length > 0) {
-      const periods = car.details[0]?.periods;
-      if (periods && Array.isArray(periods)) {
-        const matchedPeriod = periods.find(
-          (p) =>
-            p.type === periodType ||
-            (periodType === 'daily' &&
-              (p.type === 'daily' || p.period_type === 'daily')) ||
-            (periodType === 'monthly' &&
-              (p.type === 'monthly' || p.period_type === 'monthly')),
-        );
-        if (matchedPeriod) {
-          return matchedPeriod.price;
-        }
+    if (!car?.details?.length) return 0;
+    
+    const periods = car.details[0]?.periods;
+    if (periods && Array.isArray(periods)) {
+      const matchedPeriod = periods.find(
+        (p) =>
+          p.type === periodType ||
+          (periodType === 'daily' &&
+            (p.type === 'daily' || p.period_type === 'daily')) ||
+          (periodType === 'monthly' &&
+            (p.type === 'monthly' || p.period_type === 'monthly')),
+      );
+      if (matchedPeriod) {
+        return matchedPeriod.price;
       }
-      return car.details[0]?.price_per_day || 0;
     }
-    return 0;
+    return car.details[0]?.price_per_day || 0;
   }
 
   getFormattedPrice(
@@ -240,15 +225,11 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy 
     periodType: 'daily' | 'monthly' = 'daily',
   ): string {
     const price = this.getCarPrice(car, periodType);
-    return price.toString();
+    return price?.toString() || '0';
   }
 
   getCarPickupTime(car: Car): string {
-    if (
-      car.details &&
-      car.details.length > 0 &&
-      car.details[0]?.office?.quick_policy
-    ) {
+    if (car?.details?.[0]?.office?.quick_policy) {
       return (
         car.details[0].office.quick_policy.pickup_within_hour_text ||
         'استلام خلال ساعة'
@@ -258,11 +239,7 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   getCarKilometers(car: Car): string {
-    if (
-      car.details &&
-      car.details.length > 0 &&
-      car.details[0]?.office?.quick_policy
-    ) {
+    if (car?.details?.[0]?.office?.quick_policy) {
       return (
         car.details[0].office.quick_policy.km_limit_text || '200 كم / يومياً'
       );
@@ -271,18 +248,14 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   getCarFeaturesText(car: Car): string {
-    if (car.features && car.features.trim() !== '') {
+    if (car?.features && car.features.trim() !== '') {
       return car.features.trim();
     }
     return '';
   }
 
   getCarDeductibleText(car: Car): string {
-    if (
-      car.details &&
-      car.details.length > 0 &&
-      car.details[0]?.office?.quick_policy
-    ) {
+    if (car?.details?.[0]?.office?.quick_policy) {
       return car.details[0].office.quick_policy.deductible_text || '';
     }
     return '';

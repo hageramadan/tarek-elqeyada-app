@@ -46,8 +46,8 @@ export interface CarCategoriesResponse {
   providedIn: 'root'
 })
 export class CategoryService {
-  private apiUrl = 'https://dev.tareqalqeyada.sa/api/categories';
-  private carCategoriesApiUrl = 'https://dev.tareqalqeyada.sa/api/v2/car-categories';
+  private apiUrl = 'https://admin.tareqalqeyada.sa/api/categories';
+  private carCategoriesApiUrl = 'https://admin.tareqalqeyada.sa/api/v2/car-categories';
 
   constructor(private http: HttpClient) { }
  

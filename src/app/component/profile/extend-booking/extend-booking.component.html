@@ -85,8 +85,8 @@
             <input type="radio" name="payment" [value]="method.id" (change)="selectPaymentMethod(method.id)" [checked]="selectedPaymentMethod === method.id">
             <div class="payment-content">
               <!-- Cash payment: show image -->
-              <div class="payment-icon" *ngIf="(method.type === 'cash' || method.name?.includes('نقدي')) && (method.image || 'https://dev.tareqalqeyada.sa/images/payment_image.png')">
-                <img [src]="method.image || 'https://dev.tareqalqeyada.sa/images/payment_image.png'" [alt]="method.name" class="payment-image">
+              <div class="payment-icon" *ngIf="(method.type === 'cash' || method.name?.includes('نقدي')) && (method.image || 'https://admin.tareqalqeyada.sa/images/payment_image.png')">
+                <img [src]="method.image || 'https://admin.tareqalqeyada.sa/images/payment_image.png'" [alt]="method.name" class="payment-image">
               </div>
               <!-- Other payment methods: show SVG -->
               <div class="payment-icon" *ngIf="method.type !== 'cash' && !method.name?.includes('نقدي')" [innerHTML]="getPaymentIconSVG(method.icon || 'visa-mastercard')"></div>

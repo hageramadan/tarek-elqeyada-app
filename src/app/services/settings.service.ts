@@ -39,7 +39,7 @@ export interface SettingsResponse {
   providedIn: 'root'
 })
 export class SettingsService {
-  private apiUrl = 'https://dev.tareqalqeyada.sa/api/settings';
+  private apiUrl = 'https://admin.tareqalqeyada.sa/api/settings';
   private settingsCache: Settings | null = null;
 
   constructor(private http: HttpClient) { }

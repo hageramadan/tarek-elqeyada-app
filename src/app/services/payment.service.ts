@@ -112,7 +112,7 @@ export interface CashPaymentResponse {
   providedIn: 'root'
 })
 export class PaymentService {
-  private baseUrl = 'https://dev.tareqalqeyada.sa/api';
+  private baseUrl = 'https://admin.tareqalqeyada.sa/api';
   private tabbyApiKey = 'pk_test_0199f4dc-32dc-82fb-7fe2-607843864d96';
   private tabbyMerchantCode = 'masheeha';
   
