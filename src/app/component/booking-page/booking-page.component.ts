@@ -1146,10 +1146,10 @@ export class BookingPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.licenseFile && !this.licenseImageUrl) {
-      this.toastr.error('يرجى رفع صورة الرخصة', 'خطأ');
-      return;
-    }
+    // if (!this.licenseFile && !this.licenseImageUrl) {
+    //   this.toastr.error('يرجى رفع صورة الرخصة', 'خطأ');
+    //   return;
+    // }
 
     if (!this.selectedPaymentMethod) {
       this.toastr.warning('يرجى اختيار طريقة الدفع', 'تحذير');

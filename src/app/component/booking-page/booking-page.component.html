@@ -192,12 +192,12 @@
 
           <!-- License Upload -->
           <div class="form-group">
-            <label>أرفق صورة الرخصة - سارية المفعول <span *ngIf="!licenseImageUrl">*</span></label>
+            <!-- <label>أرفق صورة الرخصة - سارية المفعول <span *ngIf="!licenseImageUrl">*</span></label> -->
             <div class="file-upload">
-              <input type="file" id="license" accept=".pdf,.png,.jpg,.jpeg" (change)="onLicenseFileChange($event)" style="display: none;">
+              <!-- <input type="file" id="license" accept=".pdf,.png,.jpg,.jpeg" (change)="onLicenseFileChange($event)" style="display: none;"> -->
               
               <!-- Show existing license image if available -->
-              <div class="license-image-preview" *ngIf="licenseImageUrl && !licenseFile">
+              <!-- <div class="license-image-preview" *ngIf="licenseImageUrl && !licenseFile">
                 <img [src]="licenseImageUrl" alt="صورة الرخصة" class="license-preview-img">
                 <button type="button" class="license-edit-btn" (click)="onEditLicenseImage()">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -205,10 +205,10 @@
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                   </svg>
                 </button>
-              </div>
+              </div> -->
               
               <!-- Show file upload area if no existing image -->
-              <div class="file-upload-area" *ngIf="!licenseImageUrl && !licenseFile">
+              <!-- <div class="file-upload-area" *ngIf="!licenseImageUrl && !licenseFile">
                 <label for="license" class="file-upload-label">
                   <div class="upload-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -220,10 +220,10 @@
                   <span class="upload-text">ارفق الملف</span>
                 </label>
                 <span class="file-info">PDF, PNG Or JPG (MAX 5 MB)</span>
-              </div>
+              </div> -->
               
               <!-- Show selected file info -->
-              <div class="file-selected" *ngIf="licenseFile">
+              <!-- <div class="file-selected" *ngIf="licenseFile">
                 <div class="file-selected-info">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="file-icon">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -240,7 +240,7 @@
                     <line x1="6" y1="6" x2="18" y2="18"/>
                   </svg>
                 </button>
-              </div>
+              </div> -->
             </div>
           </div>
         </form>

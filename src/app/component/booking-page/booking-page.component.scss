@@ -80,7 +80,7 @@
     gap: 2rem;
     margin-bottom: 1.5rem;
     max-width: 100% !important;
-    overflow-x: hidden !important;
+    // overflow-x: hidden !important;
     width: 100% !important;
     box-sizing: border-box !important;
 
@@ -727,7 +727,7 @@
       transition: border-color 0.3s ease;
       background: white;
       box-sizing: border-box !important;
-      overflow-x: hidden !important;
+      // overflow-x: hidden !important;
 
       &:focus {
         outline: none;
@@ -1078,7 +1078,7 @@
       width: 100% !important;
       max-width: 100% !important;
       box-sizing: border-box !important;
-      overflow-x: hidden !important;
+      // overflow-x: hidden !important;
       
       .map-location-info {
         display: flex;
