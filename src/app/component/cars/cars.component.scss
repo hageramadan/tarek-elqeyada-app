@@ -262,7 +262,7 @@
   .car-card {
     width: 100%;
     height: 100%;
-    background: rgba(229, 217, 255, 0.4);
+    // background: rgba(229, 217, 255, 0.4);
     border: 1px solid #e5d9ff;
     border-radius: 16px;
     padding: 12px;
@@ -336,6 +336,7 @@
       .car-type-price-row {
         display: flex;
         justify-content: space-between;
+        align-items: start;
         // flex-wrap: wrap;
       }
 
@@ -496,7 +497,27 @@
     --swiper-slides-per-view: 2;
   }
 }
-
+// أزرار التبديل بين التأجير اليومي والشهري
+.rental-type-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 2rem 0 3rem;
+  
+  .rental-type-btn {
+    @extend %btn-base;
+    padding: 0.875rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    min-width: 330px;
+    
+    @media (max-width: 680px) {
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      min-width: 180px;
+    }
+  }
+}
 @media (min-width: 1024px) {
   swiper-container {
     --swiper-slides-per-view: 2.5;
@@ -580,7 +601,8 @@
           font-size: 1rem;
         }
         .price-text {
-          display: none;
+          // display: none;
+          font-size: 0.75rem;
         }
         .car-features {
           .feature-item {
@@ -603,7 +625,7 @@
 }
 
 @media (max-width: 480px) {
-   .car-card{
+  .car-card{
      padding: 7px;
   }
   .car-categories-container {
@@ -680,3 +702,4 @@
     display: flex !important; /* أو flex كما هو موجود */
   }
 }
+

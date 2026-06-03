@@ -34,7 +34,8 @@ interface SwiperElement extends HTMLElement {
 })
 export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   categories: CarCategory[] = [];
-
+  activeRentalType: 'daily' | 'monthly' = 'daily';
+  
   // استقبال البيانات من الصفحة الرئيسية عبر @Input()
   @Input() allDailyEconomicCars: Car[] = [];
   @Input() allDailySuvCars: Car[] = [];
@@ -78,7 +79,7 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy,
           this.dataLoaded = true;
           this.initializeSwipers();
         } else if (this.hasAnyCars) {
-          this.updateAllSwipers();
+          this.updateSwipersBasedOnType();
         }
       }, 200);
     }
@@ -119,10 +120,42 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy,
   }
 
   /**
+   * التبديل بين التأجير اليومي والشهري
+   */
+  switchRentalType(type: 'daily' | 'monthly') {
+    if (this.activeRentalType === type) return;
+    
+    this.activeRentalType = type;
+    console.log(`🔄 تم التبديل إلى: ${type === 'daily' ? 'التأجير اليومي' : 'التأجير الشهري'}`);
+    
+    // إعادة تهيئة Swipers بعد تغيير البيانات مباشرة
+    setTimeout(() => {
+      this.updateSwipersBasedOnType();
+    }, 100);
+  }
+
+  /**
+   * تحديث الـ Swipers بناءً على نوع التأجير النشط
+   */
+  private updateSwipersBasedOnType() {
+    const economicSlider = document.querySelector('#economicSlider') as SwiperElement;
+    const suvSlider = document.querySelector('#suvSlider') as SwiperElement;
+    
+    const sliders = [economicSlider, suvSlider];
+    
+    sliders.forEach(slider => {
+      if (slider && slider.swiper) {
+        slider.swiper.update();
+        console.log(`🔄 تم تحديث Swiper: ${slider.id}`);
+      }
+    });
+  }
+
+  /**
    * تهيئة كل Swiper على حدة
    */
   private initializeSwipers() {
-    const swiperIds = ['slider1', 'slider2', 'slider3', 'slider4'];
+    const swiperIds = ['economicSlider', 'suvSlider'];
     
     swiperIds.forEach(id => {
       const swiperEl = document.querySelector(`#${id}`) as SwiperElement;
@@ -151,8 +184,14 @@ export class CarCategoriesComponent implements OnInit, AfterViewInit, OnDestroy,
 
         Object.assign(swiperEl, swiperParams);
 
-        const prevBtn = document.querySelector(`.${id.replace('slider', 'slider')}-prev`);
-        const nextBtn = document.querySelector(`.${id.replace('slider', 'slider')}-next`);
+        let prevBtn, nextBtn;
+        if (id === 'economicSlider') {
+          prevBtn = document.querySelector('.slider-economic-prev');
+          nextBtn = document.querySelector('.slider-economic-next');
+        } else if (id === 'suvSlider') {
+          prevBtn = document.querySelector('.slider-suv-prev');
+          nextBtn = document.querySelector('.slider-suv-next');
+        }
         
         if (prevBtn && nextBtn) {
           Object.assign(swiperEl, {

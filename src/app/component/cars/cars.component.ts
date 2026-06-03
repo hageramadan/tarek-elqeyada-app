@@ -42,11 +42,8 @@ export class CarsComponent implements OnInit, AfterViewInit, OnDestroy {
   allMonthlyEconomicCars: Car[] = [];
   allMonthlySuvCars: Car[] = [];
 
-  // المتغيرات للسيارات المعروضة حالياً (مع عرض المزيد)
-  displayedDailyEconomicCars: Car[] = [];
-  displayedDailySuvCars: Car[] = [];
-  displayedMonthlyEconomicCars: Car[] = [];
-  displayedMonthlySuvCars: Car[] = [];
+  // نوع التأجير النشط (يومي/شهري)
+  activeRentalType: 'daily' | 'monthly' = 'daily';
 
   isLoading = true;
   
@@ -103,7 +100,6 @@ export class CarsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.allMonthlyEconomicCars = results.economicMonthly;
         this.allMonthlySuvCars = results.suvMonthly;
 
-        this.updateDisplayedCars();
         this.isLoading = false;
 
         // إعادة تهيئة الـ Swipers بعد تحديث البيانات
@@ -118,24 +114,66 @@ export class CarsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  updateDisplayedCars() {
-    this.displayedDailyEconomicCars = this.allDailyEconomicCars;
-    this.displayedDailySuvCars = this.allDailySuvCars;
-    this.displayedMonthlyEconomicCars = this.allMonthlyEconomicCars;
-    this.displayedMonthlySuvCars = this.allMonthlySuvCars;
+  /**
+   * التبديل بين التأجير اليومي والشهري
+   */
+  switchRentalType(type: 'daily' | 'monthly') {
+    if (this.activeRentalType === type) return;
+    
+    this.activeRentalType = type;
+    console.log(`🔄 تم التبديل إلى: ${type === 'daily' ? 'التأجير اليومي' : 'التأجير الشهري'}`);
+    
+    // تحديث الـ Swipers بعد تغيير البيانات
+    setTimeout(() => {
+      this.updateSwipersBasedOnType();
+    }, 100);
   }
 
   /**
-   * تهيئة كل Swiper على حدة عن طريق ضبط خصائصه في DOM
+   * الحصول على السيارات الاقتصادية حسب النوع النشط
+   */
+  getCurrentEconomicCars(): Car[] {
+    return this.activeRentalType === 'daily' 
+      ? this.allDailyEconomicCars 
+      : this.allMonthlyEconomicCars;
+  }
+
+  /**
+   * الحصول على السيارات المتوسطة حسب النوع النشط
+   */
+  getCurrentSuvCars(): Car[] {
+    return this.activeRentalType === 'daily' 
+      ? this.allDailySuvCars 
+      : this.allMonthlySuvCars;
+  }
+
+  /**
+   * تحديث الـ Swipers بناءً على نوع التأجير النشط
+   */
+  private updateSwipersBasedOnType() {
+    const economicSlider = document.querySelector('#economicSlider') as SwiperElement;
+    const suvSlider = document.querySelector('#suvSlider') as SwiperElement;
+    
+    const sliders = [economicSlider, suvSlider];
+    
+    sliders.forEach(slider => {
+      if (slider && slider.swiper) {
+        slider.swiper.update();
+        console.log(`🔄 تم تحديث Swiper: ${slider.id}`);
+      }
+    });
+  }
+
+  /**
+   * تهيئة كل Swiper على حدة
    */
   private initializeSwipers() {
-    const swiperIds = ['slider1', 'slider2', 'slider3', 'slider4'];
+    const swiperIds = ['economicSlider', 'suvSlider'];
     
     swiperIds.forEach(id => {
       const swiperEl = document.querySelector(`#${id}`) as SwiperElement;
       if (swiperEl && !this.swiperElements.has(id)) {
         
-        // إعدادات الـ Swiper لعرض 3 كروت
         const swiperParams = {
           slidesPerView: 1.5,
           spaceBetween: 5,
@@ -145,11 +183,11 @@ export class CarsComponent implements OnInit, AfterViewInit, OnDestroy {
           observeParents: true,
           centeredSlides: false,
           breakpoints: {
-              0: { 
-            slidesPerView: 1.5, 
-            spaceBetween: 12,
-            centeredSlides: false,
-          },
+            0: { 
+              slidesPerView: 1.5, 
+              spaceBetween: 12,
+              centeredSlides: false,
+            },
             640: { slidesPerView: 1.5, spaceBetween: 16 },
             768: { slidesPerView: 2, spaceBetween: 20 },
             1024: { slidesPerView: 2.5, spaceBetween: 20 },
@@ -157,14 +195,17 @@ export class CarsComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         };
 
-        // تطبيق الإعدادات على العنصر
         Object.assign(swiperEl, swiperParams);
 
-        // الحصول على أزرار التنقل
-        const prevBtn = document.querySelector(`.${id.replace('slider', 'slider')}-prev`);
-        const nextBtn = document.querySelector(`.${id.replace('slider', 'slider')}-next`);
+        let prevBtn, nextBtn;
+        if (id === 'economicSlider') {
+          prevBtn = document.querySelector('.slider-economic-prev');
+          nextBtn = document.querySelector('.slider-economic-next');
+        } else if (id === 'suvSlider') {
+          prevBtn = document.querySelector('.slider-suv-prev');
+          nextBtn = document.querySelector('.slider-suv-next');
+        }
         
-        // إعداد أزرار التنقل
         if (prevBtn && nextBtn) {
           Object.assign(swiperEl, {
             navigation: {
@@ -174,10 +215,7 @@ export class CarsComponent implements OnInit, AfterViewInit, OnDestroy {
           });
         }
 
-        // تهيئة الـ Swiper
         swiperEl.initialize();
-        
-        // تخزين مرجع لعنصر Swiper
         this.swiperElements.set(id, swiperEl);
         console.log(`✅ Swiper ${id} initialized`);
       }
@@ -199,10 +237,8 @@ export class CarsComponent implements OnInit, AfterViewInit, OnDestroy {
    * التحقق من وجود سيارات في أي قسم
    */
   get hasAnyCars(): boolean {
-    return this.displayedDailyEconomicCars.length > 0 ||
-           this.displayedDailySuvCars.length > 0 ||
-           this.displayedMonthlyEconomicCars.length > 0 ||
-           this.displayedMonthlySuvCars.length > 0;
+    return this.getCurrentEconomicCars().length > 0 ||
+           this.getCurrentSuvCars().length > 0;
   }
 
   /**
