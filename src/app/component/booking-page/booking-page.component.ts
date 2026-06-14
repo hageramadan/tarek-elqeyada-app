@@ -1734,57 +1734,169 @@
 //   }
 
 //   initMap() {
-//     const mapElement = document.getElementById('map');
-//     if (!mapElement) {
-//       return;
-//     }
+//   const mapElement = document.getElementById('map');
+//   if (!mapElement) {
+//     return;
+//   }
 
-//     if (!(window as any).google || !(window as any).google.maps) {
+//   if (!(window as any).google || !(window as any).google.maps) {
+//     setTimeout(() => {
+//       this.initMap();
+//     }, 200);
+//     return;
+//   }
+
+//   try {
+//     const riyadhCenter = { lat: 24.7136, lng: 46.6753 };
+//     const initialCenter = this.selectedLocation 
+//       ? { lat: this.selectedLocation.lat, lng: this.selectedLocation.lng }
+//       : riyadhCenter;
+
+//     this.map = new (window as any).google.maps.Map(mapElement, {
+//       center: initialCenter,
+//       zoom: 15,
+//       mapTypeControl: true,
+//       streetViewControl: false,
+//       fullscreenControl: false,
+//       language: 'ar',
+//       mapTypeId: (window as any).google.maps.MapTypeId.ROADMAP,
+//       gestureHandling: 'greedy',
+//       disableDoubleClickZoom: false
+//     });
+
+//     this.geocoder = new (window as any).google.maps.Geocoder();
+    
+//     // ✅ تصميم Pin احترافي باللون البنفسجي مع تأثيرات 3D
+//     const professionalPinSVG = `
+//       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 56" width="60" height="92">
+//         <defs>
+//           <!-- ظل خارجي ناعم -->
+//           <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+//             <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.35"/>
+//           </filter>
+//           <!-- تدرج لوني رئيسي -->
+//           <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+//             <stop offset="0%" style="stop-color:#A855F7;stop-opacity:1" />
+//             <stop offset="40%" style="stop-color:#7C3AED;stop-opacity:1" />
+//             <stop offset="100%" style="stop-color:#4C1D95;stop-opacity:1" />
+//           </linearGradient>
+//           <!-- تدرج للإضاءة -->
+//           <linearGradient id="highlightGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+//             <stop offset="0%" style="stop-color:#D8B4FE;stop-opacity:0.6" />
+//             <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:0" />
+//           </linearGradient>
+//           <!-- تدرج للدائرة الداخلية -->
+//           <radialGradient id="innerCircleGradient" cx="35%" cy="35%" r="65%">
+//             <stop offset="0%" style="stop-color:#F3E8FF;stop-opacity:1" />
+//             <stop offset="100%" style="stop-color:#DDD6FE;stop-opacity:1" />
+//           </radialGradient>
+//           <!-- تدرج للنقطة المركزية -->
+//           <radialGradient id="centerDotGradient" cx="30%" cy="30%" r="70%">
+//             <stop offset="0%" style="stop-color:#C084FC;stop-opacity:1" />
+//             <stop offset="100%" style="stop-color:#5B21B6;stop-opacity:1" />
+//           </radialGradient>
+//         </defs>
+        
+//         <!-- جسم الدبوس الرئيسي مع ظل -->
+//         <path fill="url(#mainGradient)" stroke="#4C1D95" stroke-width="1.5" filter="url(#shadow)"
+//           d="M20 2C9.5 2 2 9.5 2 20C2 34.5 20 54 20 54C20 54 38 34.5 38 20C38 9.5 30.5 2 20 2Z"/>
+        
+//         <!-- طبقة إضاءة على الجزء العلوي -->
+//         <path fill="url(#highlightGradient)" opacity="0.5"
+//           d="M20 2C9.5 2 2 9.5 2 20C2 30 8 37 14 40C12 30 14 18 20 14C26 18 28 30 26 40C32 37 38 30 38 20C38 9.5 30.5 2 20 2Z"/>
+        
+//         <!-- حلقة زخرفية خارجية -->
+//         <circle cx="20" cy="17" r="10" fill="none" stroke="#C084FC" stroke-width="2" opacity="0.4"/>
+//         <circle cx="20" cy="17" r="7.5" fill="none" stroke="#A855F7" stroke-width="1.5" opacity="0.3"/>
+        
+//         <!-- الدائرة الخارجية البيضاء -->
+//         <circle cx="20" cy="17" r="6" fill="url(#innerCircleGradient)" stroke="#D8B4FE" stroke-width="1"/>
+        
+//         <!-- الدائرة الداخلية البنفسجية -->
+//         <circle cx="20" cy="17" r="3.5" fill="url(#centerDotGradient)"/>
+        
+//         <!-- نقطة لمعان أعلى -->
+//         <circle cx="17.5" cy="14" r="1.2" fill="white" opacity="0.8"/>
+        
+//         <!-- تأثير لمعان جانبي -->
+//         <ellipse cx="23" cy="16" rx="1.5" ry="1" fill="white" opacity="0.3"/>
+        
+//         <!-- خطوط زخرفية على جسم الدبوس -->
+//         <path d="M10 40 Q20 45 30 40" fill="none" stroke="#D8B4FE" stroke-width="1" opacity="0.3"/>
+//         <path d="M12 44 Q20 48 28 44" fill="none" stroke="#D8B4FE" stroke-width="1" opacity="0.2"/>
+//       </svg>
+//     `;
+
+//     const pinIcon = {
+//       url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(professionalPinSVG),
+//       scaledSize: new (window as any).google.maps.Size(41, 65),
+//       anchor: new (window as any).google.maps.Point(28, 80),
+//       labelOrigin: new (window as any).google.maps.Point(28, 17)
+//     };
+
+//     this.marker = new (window as any).google.maps.Marker({
+//       position: initialCenter,
+//       map: this.map,
+//       draggable: true,
+//       animation: (window as any).google.maps.Animation.DROP,
+//       title: 'موقع الاستلام',
+//       icon: pinIcon,
+//       cursor: 'pointer',
+//       optimized: false
+//     });
+
+//     // تأثير اهتزاز عند بدء السحب
+//     this.marker.addListener('dragstart', () => {
+//       this.marker.setAnimation((window as any).google.maps.Animation.BOUNCE);
+//     });
+    
+//     // عند انتهاء السحب
+//     this.marker.addListener('dragend', () => {
+//       this.marker.setAnimation(null);
+//       const position = this.marker.getPosition();
+//       const lat = position.lat();
+//       const lng = position.lng();
+//       this.getAddressFromLatLng(lat, lng);
+//     });
+
+//     // عند النقر على الخريطة مع تأثير
+//     this.map.addListener('click', (event: any) => {
+//       const lat = event.latLng.lat();
+//       const lng = event.latLng.lng();
+//       this.marker.setPosition(event.latLng);
+//       this.marker.setAnimation((window as any).google.maps.Animation.BOUNCE);
 //       setTimeout(() => {
-//         this.initMap();
-//       }, 200);
-//       return;
+//         this.marker.setAnimation(null);
+//       }, 600);
+//       this.getAddressFromLatLng(lat, lng);
+//     });
+
+//     // تأثير hover عند تمرير الماوس
+//     this.marker.addListener('mouseover', () => {
+//       this.marker.setIcon({
+//         url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(professionalPinSVG.replace('56', '62').replace('80', '88')),
+//         scaledSize: new (window as any).google.maps.Size(62, 88),
+//         anchor: new (window as any).google.maps.Point(31, 88)
+//       });
+//     });
+    
+//     this.marker.addListener('mouseout', () => {
+//       this.marker.setIcon(pinIcon);
+//     });
+
+//     // إذا كان هناك موقع محدد مسبقاً
+//     if (this.selectedLocation) {
+//       this.marker.setPosition({ lat: this.selectedLocation.lat, lng: this.selectedLocation.lng });
 //     }
 
-//     try {
-//       const riyadhCenter = { lat: 24.7136, lng: 46.6753 };
-//       const initialCenter = this.selectedLocation 
-//         ? { lat: this.selectedLocation.lat, lng: this.selectedLocation.lng }
-//         : riyadhCenter;
-
-//       this.map = new (window as any).google.maps.Map(mapElement, {
-//         center: initialCenter,
-//         zoom: 13,
-//         mapTypeControl: true,
-//         streetViewControl: false,
-//         fullscreenControl: false,
-//         language: 'ar',
-//         mapTypeId: (window as any).google.maps.MapTypeId.ROADMAP,
-//         gestureHandling: 'greedy',
-//         disableDoubleClickZoom: false
-//       });
-
-//       this.geocoder = new (window as any).google.maps.Geocoder();
-//       this.createCenterMarker();
-
-//       this.mapCenterListener = this.map.addListener('center_changed', () => {
-//         this.updateLocationFromCenter();
-//       });
-
-//       this.map.addListener('dragend', () => {
-//         this.updateLocationFromCenter();
-//       });
-
-//       if (this.selectedLocation) {
-//         this.map.setCenter({ lat: this.selectedLocation.lat, lng: this.selectedLocation.lng });
-//       }
-//     } catch (error) {
-//       console.error('Error initializing map:', error);
-//       if (mapElement) {
-//         mapElement.innerHTML = '<div style="width: 100%; height: 100%; background: #F3F4F6; display: flex; align-items: center; justify-content: center; color: #6B7280; direction: rtl;">يرجى إضافة Google Maps API Key في index.html</div>';
-//       }
+//   } catch (error) {
+//     console.error('Error initializing map:', error);
+//     if (mapElement) {
+//       mapElement.innerHTML = '<div style="width: 100%; height: 100%; background: #F3F4F6; display: flex; align-items: center; justify-content: center; color: #6B7280; direction: rtl;">يرجى إضافة Google Maps API Key في index.html</div>';
 //     }
 //   }
+// }
+
 
 //   createCenterMarker() {
 //     const mapElement = document.getElementById('map');
@@ -1843,91 +1955,99 @@
 //     });
 //   }
 
-//   getCurrentLocation() {
-//     if (!navigator.geolocation) {
-//       this.toastr.error('المتصفح لا يدعم تحديد الموقع', 'خطأ');
-//       return;
-//     }
+//  getCurrentLocation() {
+//   if (!navigator.geolocation) {
+//     this.toastr.error('المتصفح لا يدعم تحديد الموقع', 'خطأ');
+//     return;
+//   }
 
-//     this.isLoading = true;
-//     this.toastr.info('جاري تحديد موقعك الحالي...', 'معلومة');
+//   this.isLoading = true;
+//   this.toastr.info('جاري تحديد موقعك الحالي...', 'معلومة');
 
-//     navigator.geolocation.getCurrentPosition(
-//       (position) => {
-//         const lat = position.coords.latitude;
-//         const lng = position.coords.longitude;
+//   navigator.geolocation.getCurrentPosition(
+//     (position) => {
+//       const lat = position.coords.latitude;
+//       const lng = position.coords.longitude;
 
-//         if (this.geocoder) {
-//           this.geocoder.geocode({ location: { lat, lng } }, (results: any[], status: string) => {
-//             this.isLoading = false;
-//             if (status === 'OK' && results[0]) {
-//               this.selectedLocation = {
-//                 address: results[0].formatted_address,
-//                 lat: lat,
-//                 lng: lng
-//               };
-
-//               if (this.map) {
-//                 this.map.setCenter({ lat, lng });
-//                 this.map.setZoom(15);
-//               }
-
-//               this.bookingForm.patchValue({
-//                 address: this.selectedLocation.address
-//               });
-              
-//               this.toastr.success('تم تحديد موقعك بنجاح', 'نجح');
-//               setTimeout(() => {
-//                 this.closeMapModal();
-//               }, 500);
-//             } else {
-//               this.toastr.error('لم يتم العثور على عنوان للموقع', 'خطأ');
-//             }
-//           });
-//         } else {
+//       if (this.geocoder) {
+//         this.geocoder.geocode({ location: { lat, lng } }, (results: any[], status: string) => {
 //           this.isLoading = false;
-//           this.toastr.error('خطأ في الخريطة', 'خطأ');
-//         }
-//       },
-//       (error) => {
-//         this.isLoading = false;
-//         console.error('Geolocation error:', error);
-//         this.toastr.error('فشل تحديد الموقع. يرجى التحقق من إعدادات الموقع', 'خطأ');
-//       },
-//       {
-//         enableHighAccuracy: true,
-//         timeout: 10000,
-//         maximumAge: 0
-//       }
-//     );
-//   }
+//           if (status === 'OK' && results[0]) {
+//             this.selectedLocation = {
+//               address: results[0].formatted_address,
+//               lat: lat,
+//               lng: lng
+//             };
 
-//   searchLocation() {
-//     if (!this.geocoder || !this.mapSearchQuery.trim()) {
-//       return;
-//     }
+//             // ✅ تحريك الـ Pin إلى موقع المستخدم
+//             if (this.map) {
+//               this.map.setCenter({ lat, lng });
+//               this.map.setZoom(15);
+//               if (this.marker) {
+//                 this.marker.setPosition({ lat, lng });
+//               }
+//             }
 
-//     this.geocoder.geocode({ address: this.mapSearchQuery + ', Saudi Arabia' }, (results: any[], status: string) => {
-//       if (status === 'OK' && results[0]) {
-//         const location = results[0].geometry.location;
-//         const lat = location.lat();
-//         const lng = location.lng();
-
-//         this.selectedLocation = {
-//           address: results[0].formatted_address,
-//           lat: lat,
-//           lng: lng
-//         };
-
-//         if (this.map) {
-//           this.map.setCenter({ lat, lng });
-//           this.map.setZoom(15);
-//         }
+//             this.bookingForm.patchValue({
+//               address: this.selectedLocation.address
+//             });
+            
+//             this.toastr.success('تم تحديد موقعك بنجاح', 'نجح');
+//             setTimeout(() => {
+//               this.closeMapModal();
+//             }, 500);
+//           } else {
+//             this.toastr.error('لم يتم العثور على عنوان للموقع', 'خطأ');
+//           }
+//         });
 //       } else {
-//         this.toastr.error('لم يتم العثور على الموقع', 'خطأ');
+//         this.isLoading = false;
+//         this.toastr.error('خطأ في الخريطة', 'خطأ');
 //       }
-//     });
+//     },
+//     (error) => {
+//       this.isLoading = false;
+//       console.error('Geolocation error:', error);
+//       this.toastr.error('فشل تحديد الموقع. يرجى التحقق من إعدادات الموقع', 'خطأ');
+//     },
+//     {
+//       enableHighAccuracy: true,
+//       timeout: 10000,
+//       maximumAge: 0
+//     }
+//   );
+// }
+
+//  searchLocation() {
+//   if (!this.geocoder || !this.mapSearchQuery.trim()) {
+//     return;
 //   }
+
+//   this.geocoder.geocode({ address: this.mapSearchQuery + ', Saudi Arabia' }, (results: any[], status: string) => {
+//     if (status === 'OK' && results[0]) {
+//       const location = results[0].geometry.location;
+//       const lat = location.lat();
+//       const lng = location.lng();
+
+//       this.selectedLocation = {
+//         address: results[0].formatted_address,
+//         lat: lat,
+//         lng: lng
+//       };
+
+//       if (this.map) {
+//         this.map.setCenter({ lat, lng });
+//         this.map.setZoom(15);
+//         // ✅ تحريك الـ Pin إلى الموقع المبحوث عنه
+//         if (this.marker) {
+//           this.marker.setPosition({ lat, lng });
+//         }
+//       }
+//     } else {
+//       this.toastr.error('لم يتم العثور على الموقع', 'خطأ');
+//     }
+//   });
+// }
 
 //   confirmLocation() {
 //     if (this.selectedLocation) {
@@ -3590,33 +3710,122 @@ initMap() {
 
     this.geocoder = new (window as any).google.maps.Geocoder();
     
-    // ✅ إضافة Pin متحرك (Marker) يمكن سحبه أو النقر عليه
+    // ✅ تصميم Pin احترافي باللون البنفسجي مع تأثيرات 3D
+    const professionalPinSVG = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 56" width="60" height="92">
+        <defs>
+          <!-- ظل خارجي ناعم -->
+          <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.35"/>
+          </filter>
+          <!-- تدرج لوني رئيسي -->
+          <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#A855F7;stop-opacity:1" />
+            <stop offset="40%" style="stop-color:#7C3AED;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4C1D95;stop-opacity:1" />
+          </linearGradient>
+          <!-- تدرج للإضاءة -->
+          <linearGradient id="highlightGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#D8B4FE;stop-opacity:0.6" />
+            <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:0" />
+          </linearGradient>
+          <!-- تدرج للدائرة الداخلية -->
+          <radialGradient id="innerCircleGradient" cx="35%" cy="35%" r="65%">
+            <stop offset="0%" style="stop-color:#F3E8FF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#DDD6FE;stop-opacity:1" />
+          </radialGradient>
+          <!-- تدرج للنقطة المركزية -->
+          <radialGradient id="centerDotGradient" cx="30%" cy="30%" r="70%">
+            <stop offset="0%" style="stop-color:#C084FC;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#5B21B6;stop-opacity:1" />
+          </radialGradient>
+        </defs>
+        
+        <!-- جسم الدبوس الرئيسي مع ظل -->
+        <path fill="url(#mainGradient)" stroke="#4C1D95" stroke-width="1.5" filter="url(#shadow)"
+          d="M20 2C9.5 2 2 9.5 2 20C2 34.5 20 54 20 54C20 54 38 34.5 38 20C38 9.5 30.5 2 20 2Z"/>
+        
+        <!-- طبقة إضاءة على الجزء العلوي -->
+        <path fill="url(#highlightGradient)" opacity="0.5"
+          d="M20 2C9.5 2 2 9.5 2 20C2 30 8 37 14 40C12 30 14 18 20 14C26 18 28 30 26 40C32 37 38 30 38 20C38 9.5 30.5 2 20 2Z"/>
+        
+        <!-- حلقة زخرفية خارجية -->
+        <circle cx="20" cy="17" r="10" fill="none" stroke="#C084FC" stroke-width="2" opacity="0.4"/>
+        <circle cx="20" cy="17" r="7.5" fill="none" stroke="#A855F7" stroke-width="1.5" opacity="0.3"/>
+        
+        <!-- الدائرة الخارجية البيضاء -->
+        <circle cx="20" cy="17" r="6" fill="url(#innerCircleGradient)" stroke="#D8B4FE" stroke-width="1"/>
+        
+        <!-- الدائرة الداخلية البنفسجية -->
+        <circle cx="20" cy="17" r="3.5" fill="url(#centerDotGradient)"/>
+        
+        <!-- نقطة لمعان أعلى -->
+        <circle cx="17.5" cy="14" r="1.2" fill="white" opacity="0.8"/>
+        
+        <!-- تأثير لمعان جانبي -->
+        <ellipse cx="23" cy="16" rx="1.5" ry="1" fill="white" opacity="0.3"/>
+        
+        <!-- خطوط زخرفية على جسم الدبوس -->
+        <path d="M10 40 Q20 45 30 40" fill="none" stroke="#D8B4FE" stroke-width="1" opacity="0.3"/>
+        <path d="M12 44 Q20 48 28 44" fill="none" stroke="#D8B4FE" stroke-width="1" opacity="0.2"/>
+      </svg>
+    `;
+
+    const pinIcon = {
+      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(professionalPinSVG),
+      scaledSize: new (window as any).google.maps.Size(41, 65),
+      anchor: new (window as any).google.maps.Point(28, 80),
+      labelOrigin: new (window as any).google.maps.Point(28, 17)
+    };
+
     this.marker = new (window as any).google.maps.Marker({
       position: initialCenter,
       map: this.map,
-      draggable: true, // يمكن سحب Pin
+      draggable: true,
       animation: (window as any).google.maps.Animation.DROP,
       title: 'موقع الاستلام',
-      icon: {
-        url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-        scaledSize: new (window as any).google.maps.Size(40, 40)
-      }
+      icon: pinIcon,
+      cursor: 'pointer',
+      optimized: false
     });
 
-    // عند سحب Pin
+    // تأثير اهتزاز عند بدء السحب
+    this.marker.addListener('dragstart', () => {
+      this.marker.setAnimation((window as any).google.maps.Animation.BOUNCE);
+    });
+    
+    // عند انتهاء السحب
     this.marker.addListener('dragend', () => {
+      this.marker.setAnimation(null);
       const position = this.marker.getPosition();
       const lat = position.lat();
       const lng = position.lng();
       this.getAddressFromLatLng(lat, lng);
     });
 
-    // عند النقر على الخريطة
+    // عند النقر على الخريطة مع تأثير
     this.map.addListener('click', (event: any) => {
       const lat = event.latLng.lat();
       const lng = event.latLng.lng();
       this.marker.setPosition(event.latLng);
+      this.marker.setAnimation((window as any).google.maps.Animation.BOUNCE);
+      setTimeout(() => {
+        this.marker.setAnimation(null);
+      }, 600);
       this.getAddressFromLatLng(lat, lng);
+    });
+
+    // تأثير hover عند تمرير الماوس
+    this.marker.addListener('mouseover', () => {
+      this.marker.setIcon({
+        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(professionalPinSVG.replace('56', '62').replace('80', '88')),
+        scaledSize: new (window as any).google.maps.Size(62, 88),
+        anchor: new (window as any).google.maps.Point(31, 88)
+      });
+    });
+    
+    this.marker.addListener('mouseout', () => {
+      this.marker.setIcon(pinIcon);
     });
 
     // إذا كان هناك موقع محدد مسبقاً
