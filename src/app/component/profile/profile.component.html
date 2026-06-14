@@ -29,12 +29,12 @@
             <label>رقم الهاتف</label>
             <input type="text" formControlName="phone" placeholder="رقم الهاتف">
           </div>
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label>صورة الرخصة</label>
             <div class="file-upload">
               <input type="file" id="license" accept=".pdf,.png,.jpg,.jpeg" (change)="onLicenseImageSelected($event)" style="display: none;">
               
-              <!-- Show existing license image if available -->
+            
               <div class="license-image-preview" *ngIf="licenseImageUrl && !licenseImageFile">
                 <img [src]="licenseImageUrl" alt="صورة الرخصة" class="license-preview-img">
                 <button type="button" class="license-edit-btn" (click)="onEditLicenseImage()">
@@ -45,7 +45,7 @@
                 </button>
               </div>
               
-              <!-- Show file upload area if no existing image -->
+            
               <div class="file-upload-area" *ngIf="!licenseImageUrl && !licenseImageFile">
                 <label for="license" class="file-upload-label">
                   <div class="upload-icon">
@@ -60,7 +60,7 @@
                 <span class="file-info">PDF, PNG Or JPG (MAX 5 MB)</span>
               </div>
               
-              <!-- Show selected file info -->
+          
               <div class="file-selected" *ngIf="licenseImageFile">
                 <div class="file-selected-info">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="file-icon">
@@ -80,7 +80,7 @@
                 </button>
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="form-actions">
             <button type="button" class="btn-logout" (click)="logout()">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">

@@ -95,10 +95,14 @@ export class LoginComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.isLoading = false;
           if (response.result) {
-            this.toastr.success('تم إرسال رمز التحقق بنجاح', 'نجح', {
+            this.toastr.success('تم تسجيل الدخول بنجاح', 'نجح', {
               timeOut: 3000,
               positionClass: 'toast-top-center'
             });
+            // this.toastr.success('تم إرسال رمز التحقق بنجاح', 'نجح', {
+            //   timeOut: 3000,
+            //   positionClass: 'toast-top-center'
+            // });
             // Store phone data for OTP verification
             this.modalService.setOTPPhone(fullPhone);
             this.modalService.setOTPData(country_code, phone);

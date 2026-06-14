@@ -703,3 +703,53 @@
   }
 }
 
+
+/* الشاشات الصغيرة جداً (375px) */
+@media (max-width: 344px) {
+  .car-type {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80px;  /* أو حسب المساحة المتاحة */
+  }
+}
+
+/* الشاشة 375px - 409px */
+@media (min-width: 345px) and (max-width: 409px) {
+  .car-type {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90px;
+  }
+}
+
+/* الشاشة 410px - 499px */
+@media (min-width: 410px) and (max-width: 499px) {
+  .car-type {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+  }
+}
+
+/* الشاشة 500px وأكبر (تابلت) */
+@media (min-width: 500px) and (max-width: 767px) {
+  .car-type {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+  }
+}
+
+/* الشاشات الكبيرة (ديسك توب) */
+@media (min-width: 768px) {
+  .car-type {
+    white-space: normal;  /* يسمح بنزول السطر */
+    overflow: visible;
+    text-overflow: clip;
+    max-width: none;
+  }
+}
